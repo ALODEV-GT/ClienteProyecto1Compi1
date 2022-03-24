@@ -1,10 +1,14 @@
 package midik.frontend;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import sockets.Cliente;
-import sockets.Envio;
 
 public class VtnPrincipal extends javax.swing.JFrame {
 
@@ -28,7 +32,7 @@ public class VtnPrincipal extends javax.swing.JFrame {
         btnAnalizar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,10 +101,16 @@ public class VtnPrincipal extends javax.swing.JFrame {
         );
 
         jMenu1.setText("Archivo");
-        jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenuItem2.setText("Abrir proyecto");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 
@@ -147,12 +157,51 @@ public class VtnPrincipal extends javax.swing.JFrame {
         if (this.directorioProyecto1 == null || this.directorioProyecto2 == null) {
             JOptionPane.showMessageDialog(null, "Por favor elige los directorios", "Incorrecto", JOptionPane.WARNING_MESSAGE);
         } else {
-            Cliente cliente = new Cliente(directorioProyecto1, directorioProyecto2);
+            Cliente cliente = new Cliente(directorioProyecto1, directorioProyecto2, this);
             cliente.IniciarCliente();
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        JFileChooser fileChosser = new JFileChooser();
+        fileChosser.setDialogTitle("Selecciona el proyecto");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo copy", "copy");
+        fileChosser.setFileFilter(filter);
+        int seleccion = fileChosser.showOpenDialog(this);
 
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File archivo = fileChosser.getSelectedFile();
+            abrirProyecto(archivo);
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void abrirProyecto(File archivoCopy) {
+        String estructura = leerArchivo(archivoCopy);
+        String[] archivos = estructura.split(",");
+        File archivoJson = new File(archivos[0].replace(" ", ""));
+        File archivoDef = new File(archivos[1].replace(" ", ""));
+        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef);
+        vtnEdicion.setVisible(true);
+        this.dispose();
+    }
+
+    public static String leerArchivo(File archivo) {
+        String contenido = "";
+        try {
+            BufferedReader lector = new BufferedReader(new FileReader(archivo));
+            String linea = lector.readLine();
+            while (linea != null) {
+                contenido += linea + "\n";
+                linea = lector.readLine();
+            }
+            lector.close();
+        } catch (FileNotFoundException ex) {
+            //
+        } catch (IOException ex) {
+            //
+        }
+        return contenido;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnalizar;
     private javax.swing.JButton btnSelecP1;
@@ -160,8 +209,8 @@ public class VtnPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

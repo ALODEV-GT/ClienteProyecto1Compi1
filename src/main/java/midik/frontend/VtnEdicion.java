@@ -1,10 +1,23 @@
 package midik.frontend;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+
 public class VtnEdicion extends javax.swing.JFrame {
 
-    public VtnEdicion() {
+    private File archivoJson;
+    private File archivoDef;
+
+    public VtnEdicion(File archivoJson, File archivoDef) {
+        this.archivoJson = archivoJson;
+        this.archivoDef = archivoDef;
         initComponents();
         this.setLocationRelativeTo(null);
+        this.taJson.setText(VtnPrincipal.leerArchivo(this.archivoJson));
+        this.taDef.setText(VtnPrincipal.leerArchivo(this.archivoDef));
     }
 
     @SuppressWarnings("unchecked")
@@ -13,8 +26,10 @@ public class VtnEdicion extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
         jScrollPane3 = new javax.swing.JScrollPane();
+        taJson = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        taDef = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -22,12 +37,21 @@ public class VtnEdicion extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTabbedPane1.addTab("reportes.def", jScrollPane2);
+        taJson.setColumns(20);
+        taJson.setRows(5);
+        jScrollPane3.setViewportView(taJson);
+
         jTabbedPane1.addTab("resultado.json", jScrollPane3);
+
+        taDef.setColumns(20);
+        taDef.setRows(5);
+        jScrollPane2.setViewportView(taDef);
+
+        jTabbedPane1.addTab("reportes.def", jScrollPane2);
         jTabbedPane1.addTab("Reportes", jScrollPane4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -71,10 +95,16 @@ public class VtnEdicion extends javax.swing.JFrame {
         );
 
         jMenu1.setText("Archivo");
-        jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenuItem1.setText("Guardar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 
@@ -97,12 +127,44 @@ public class VtnEdicion extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        this.guardar();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    public void guardar() {
+        String contenidoJson = taJson.getText();
+        String contenidoDef = taDef.getText();
+        boolean guardadoDef = guardarArchivo(this.archivoDef, contenidoDef);
+        boolean guardadoJson = guardarArchivo(this.archivoJson, contenidoJson);
+        if (guardadoJson && guardadoDef) {
+            JOptionPane.showMessageDialog(null, "Cambios guardados");
+        } else {
+            JOptionPane.showMessageDialog(null, "No se pudieron guardar todos los cambios");
+        }
+    }
+    
+    public boolean guardarArchivo(File archivo, String documento){
+        FileOutputStream salida;
+        boolean guardado = false;
+        try{
+            salida = new FileOutputStream(archivo);
+            byte[] bytxt = documento.getBytes();
+            salida.write(bytxt);
+            guardado = true;
+            salida.close();
+        }catch(FileNotFoundException ex){
+            //Error
+        } catch (IOException ex) {
+            //Error
+        }
+        return guardado;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -111,5 +173,7 @@ public class VtnEdicion extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea taDef;
+    private javax.swing.JTextArea taJson;
     // End of variables declaration//GEN-END:variables
 }
