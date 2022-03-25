@@ -1,6 +1,6 @@
 package test;
 
-import midik.frontend.VtnPrincipal;
+import frontend.VtnPrincipal;
 
 public class Main {
 

@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import midik.frontend.VtnEdicion;
-import static midik.frontend.VtnPrincipal.leerArchivo;
+import frontend.VtnEdicion;
+import static frontend.VtnPrincipal.leerArchivo;
 
 public class Recibir {
 

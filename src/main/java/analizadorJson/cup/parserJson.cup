@@ -1,0 +1,250 @@
+package analizadorJson.cup;
+import java_cup.runtime.Symbol;
+import analizadorJson.tablaSimbolos.TablaSimbolosJson;
+import analizadorJson.tablaSimbolos.TerminoJson;
+import analizadorJson.tablaSimbolos.RolJson;
+
+parser code
+{: 
+    private TablaSimbolosJson tablaSimbolos;
+    private javax.swing.JTextArea taErrores;
+    private boolean errores = false;
+    private TerminoJson termino;
+
+    public parser(java_cup.runtime.Scanner s, TablaSimbolosJson tablaSimbolos, javax.swing.JTextArea taErrores){
+        this(s);
+        this.tablaSimbolos = tablaSimbolos;
+        this.taErrores = taErrores;
+    }
+
+    public boolean isErrores(){
+        return errores;
+    }
+
+    public void syntax_error(Symbol s){
+        errores = true;
+        taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        errores = true;
+        taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
+    }
+:};
+
+terminal String SCORE,CLASES,VARIABLES,METODOS,COMENTARIOS,NOMBRE,FUNCION,TIPO,PARAMETROS,
+                TEXTO,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C,COMA,DOS_PUNTOS,LITERAL,ENTERO;
+non terminal String s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28;
+non terminal String c0,c1,c2,c3,c4,c5;
+non terminal String v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13;
+non terminal String m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13;
+non terminal String o0,o1,o2,o3,o4,o5; 
+
+start with s0;
+s0::= LLAVE_A s1
+| error {:taErrores.append("Se esperaba llave de apertura. \n");:}
+;
+s1::= SCORE s2
+| error {:taErrores.append("Se esperaba la palabra reservada Score. \n");:}
+;
+s2::= DOS_PUNTOS s3
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+s3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.SCORE,var1); tablaSimbolos.agregarTermino(termino);:} s4
+| error {:taErrores.append("Se esperaba un una \"literal\". \n");:}
+;
+s4::= COMA s5
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+s5::= CLASES s6
+| error {:taErrores.append("Se esperaba la palabra reservada Clases. \n");:}
+;
+s6::= DOS_PUNTOS s7
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+s7::= CORCHETE_A s8
+| error {:taErrores.append("Se esperaba corchete apertura. \n");:}
+;
+s8::= c0
+| s9
+| error {:taErrores.append("Se esperaba llave de apertura o corchete de cierre. \n");:}
+;
+c0::= LLAVE_A c1
+;
+c1::= NOMBRE c2
+| error {:taErrores.append("Se esperaba la palabra reservada Nombre. \n");:}
+;
+c2::= DOS_PUNTOS c3
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+c3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.CLASE, var1); tablaSimbolos.agregarTermino(termino);:} c4
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+c4::= LLAVE_C c5
+| error {:taErrores.append("Se esperaba LLave de cierre. \n");:}
+;
+c5::= COMA c0
+| s9
+| error {:taErrores.append("Se esperaba coma o corchete de cierre. \n");:}
+;
+s9::= CORCHETE_C s10
+;
+s10::= COMA s11
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+s11::= VARIABLES s12
+| error {:taErrores.append("Se esperaba la palabra reservada Variables. \n");:}
+;
+s12::= DOS_PUNTOS s13
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+s13::= CORCHETE_A s14
+| error {:taErrores.append("Se esperaba corchete apertura. \n");:}
+;
+s14::= v0
+| s15
+| error {:taErrores.append("Se esperaba llave de apertura o corchete de cierre. \n");:}
+;
+v0::= LLAVE_A v1
+;
+v1::= NOMBRE v2
+| error {:taErrores.append("Se esperaba la palabra reservada Nombre. \n");:}
+;
+v2::= DOS_PUNTOS v3
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+v3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.VARIABLE, var1);:} v4
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+v4::= COMA v5
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+v5::= TIPO v6
+| error {:taErrores.append("Se esperaba la palabra reservada Tipo. \n");:}
+;
+v6::= DOS_PUNTOS v7
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+v7::= LITERAL:var1 {:termino.setTipo(var1);:} v8
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+v8::= COMA v9
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+v9::= FUNCION v10
+| error {:taErrores.append("Se esperaba la palabra reservada Funcion. \n");:}
+;
+v10::= DOS_PUNTOS v11
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+v11::= LITERAL:var1 {:termino.setFuncion(var1); tablaSimbolos.agregarTermino(termino);:} v12
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+v12::= LLAVE_C v13
+| error {:taErrores.append("Se esperaba llave de cierre. \n");:}
+;
+v13::= COMA v0
+| s15
+| error {:taErrores.append("Se esperaba coma o corchete de cierre. \n");:}
+;
+s15::= CORCHETE_C s16
+;
+s16::= COMA s17
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+s17::= METODOS s18
+| error {:taErrores.append("Se esperaba la palabra reservada Metodos. \n");:}
+;
+s18::= DOS_PUNTOS s19
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+s19::= CORCHETE_A s20
+| error {:taErrores.append("Se esperaba corchete apertura. \n");:}
+;
+s20::= m0
+| s21
+| error {:taErrores.append("Se esperaba llave de apertura o corchete de cierre. \n");:}
+;
+m0::= LLAVE_A m1
+;
+m1::= NOMBRE m2
+| error {:taErrores.append("Se esperaba la palabra reservada Nombre. \n");:}
+;
+m2::= DOS_PUNTOS m3
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+m3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.METODO, var1);:} m4
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+m4::= COMA m5
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+m5::= TIPO m6
+| error {:taErrores.append("Se esperaba la palabra reservada Tipo. \n");:}
+;
+m6::= DOS_PUNTOS m7
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+m7::= LITERAL:var1 {:termino.setTipo(var1);:} m8
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+m8::= COMA m9
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+m9::= PARAMETROS m10
+| error {:taErrores.append("Se esperaba la palabra reservada Parametros. \n");:}
+;
+m10::= DOS_PUNTOS m11
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+m11::= ENTERO:var1 {:termino.setParametros(Integer.valueOf(var1)); tablaSimbolos.agregarTermino(termino);:} m12
+| error {:taErrores.append("Se esperaba un numero entero. \n");:}
+;
+m12::= LLAVE_C m13
+| error {:taErrores.append("Se esperaba llave de cierre. \n");:}
+;
+m13::= COMA m0
+| s21
+| error {:taErrores.append("Se esperaba coma o corchete de cierre. \n");:}
+;
+s21::= CORCHETE_C s22
+;
+s22::= COMA s23
+| error {:taErrores.append("Se esperaba coma. \n");:}
+;
+s23::= COMENTARIOS s24
+| error {:taErrores.append("Se esperaba la palabra reservada Comentarios. \n");:}
+;
+s24::= DOS_PUNTOS s25
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+s25::= CORCHETE_A s26
+| error {:taErrores.append("Se esperaba corchete apertura. \n");:}
+;
+s26::= o0
+| s27
+| error {:taErrores.append("Se esperaba llave de apertura o corchete de cierre. \n");:}
+;
+o0::= LLAVE_A o1
+;
+o1::= TEXTO o2
+| error {:taErrores.append("Se esperaba Texto. \n");:}
+;
+o2::= DOS_PUNTOS o3
+| error {:taErrores.append("Se esperaba dos puntos. \n");:}
+;
+o3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.COMENTARIO, var1); tablaSimbolos.agregarTermino(termino);:} o4
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
+;
+o4::= LLAVE_C o5
+| error {:taErrores.append("Se esperaba llave de cierre. \n");:}
+;
+o5::= COMA o0
+| s27
+| error {:taErrores.append("Se esperaba coma o corchete de cierre. \n");:}
+;
+s27::= CORCHETE_C s28
+;
+s28::= LLAVE_C
+| error {:taErrores.append("Se esperaba llave de cierre. \n");:}
+;

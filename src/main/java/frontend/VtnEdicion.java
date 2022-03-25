@@ -1,5 +1,7 @@
-package midik.frontend;
+package frontend;
 
+import analizadorJson.analizador.Analizar;
+import analizadorJson.tablaSimbolos.TablaSimbolosJson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,11 +12,13 @@ public class VtnEdicion extends javax.swing.JFrame {
 
     private File archivoJson;
     private File archivoDef;
+    private TablaSimbolosJson tablaSimbolosJson = new TablaSimbolosJson();
 
     public VtnEdicion(File archivoJson, File archivoDef) {
         this.archivoJson = archivoJson;
         this.archivoDef = archivoDef;
         initComponents();
+        this.taConsola.setEditable(false);
         this.setLocationRelativeTo(null);
         this.taJson.setText(VtnPrincipal.leerArchivo(this.archivoJson));
         this.taDef.setText(VtnPrincipal.leerArchivo(this.archivoDef));
@@ -32,9 +36,9 @@ public class VtnEdicion extends javax.swing.JFrame {
         taDef = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnEjecutar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        taConsola = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -65,11 +69,16 @@ public class VtnEdicion extends javax.swing.JFrame {
             .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Ejecutar");
+        btnEjecutar.setText("Ejecutar");
+        btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEjecutarActionPerformed(evt);
+            }
+        });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        taConsola.setColumns(20);
+        taConsola.setRows(5);
+        jScrollPane1.setViewportView(taConsola);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -79,7 +88,7 @@ public class VtnEdicion extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnEjecutar)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE))
                 .addContainerGap())
@@ -88,7 +97,7 @@ public class VtnEdicion extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(btnEjecutar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
@@ -131,6 +140,14 @@ public class VtnEdicion extends javax.swing.JFrame {
         this.guardar();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjecutarActionPerformed
+        this.tablaSimbolosJson.limpiar();
+        this.taConsola.setText(null);
+        Analizar analizar = new Analizar(taJson.getText(), taConsola, this.tablaSimbolosJson);
+        analizar.analizar();
+        this.tablaSimbolosJson.imprimirTabla();
+    }//GEN-LAST:event_btnEjecutarActionPerformed
+
     public void guardar() {
         String contenidoJson = taJson.getText();
         String contenidoDef = taDef.getText();
@@ -142,17 +159,17 @@ public class VtnEdicion extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No se pudieron guardar todos los cambios");
         }
     }
-    
-    public boolean guardarArchivo(File archivo, String documento){
+
+    public boolean guardarArchivo(File archivo, String documento) {
         FileOutputStream salida;
         boolean guardado = false;
-        try{
+        try {
             salida = new FileOutputStream(archivo);
             byte[] bytxt = documento.getBytes();
             salida.write(bytxt);
             guardado = true;
             salida.close();
-        }catch(FileNotFoundException ex){
+        } catch (FileNotFoundException ex) {
             //Error
         } catch (IOException ex) {
             //Error
@@ -161,7 +178,7 @@ public class VtnEdicion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnEjecutar;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -172,7 +189,7 @@ public class VtnEdicion extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea taConsola;
     private javax.swing.JTextArea taDef;
     private javax.swing.JTextArea taJson;
     // End of variables declaration//GEN-END:variables
