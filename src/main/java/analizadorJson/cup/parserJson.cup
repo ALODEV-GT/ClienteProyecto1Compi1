@@ -51,7 +51,7 @@ s2::= DOS_PUNTOS s3
 | error {:taErrores.append("Se esperaba dos puntos. \n");:}
 ;
 s3::= LITERAL:var1 {:termino = new TerminoJson(RolJson.SCORE,var1); tablaSimbolos.agregarTermino(termino);:} s4
-| error {:taErrores.append("Se esperaba un una \"literal\". \n");:}
+| error {:taErrores.append("Se esperaba una \"literal\". \n");:}
 ;
 s4::= COMA s5
 | error {:taErrores.append("Se esperaba coma. \n");:}

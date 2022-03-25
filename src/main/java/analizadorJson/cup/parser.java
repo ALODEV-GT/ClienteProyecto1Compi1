@@ -471,7 +471,7 @@ termino = new TerminoJson(RolJson.SCORE,var1); tablaSimbolos.agregarTermino(term
           case 9: // s3 ::= error 
             {
               String RESULT =null;
-		taErrores.append("Se esperaba un una \"literal\". \n");
+		taErrores.append("Se esperaba una \"literal\". \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s3",3, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -480,7 +480,6 @@ termino = new TerminoJson(RolJson.SCORE,var1); tablaSimbolos.agregarTermino(term
           case 10: // s4 ::= COMA s5 
             {
               String RESULT =null;
-
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s4",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

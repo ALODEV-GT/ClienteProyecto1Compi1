@@ -13,11 +13,17 @@ public class VtnEdicion extends javax.swing.JFrame {
     private File archivoJson;
     private File archivoDef;
     private TablaSimbolosJson tablaSimbolosJson = new TablaSimbolosJson();
+    private NumeroLinea numLineaJson;
+    private NumeroLinea numLineaDef;
 
     public VtnEdicion(File archivoJson, File archivoDef) {
         this.archivoJson = archivoJson;
         this.archivoDef = archivoDef;
         initComponents();
+        this.numLineaJson = new NumeroLinea(taJson);
+        this.numLineaDef = new NumeroLinea(taDef);
+        this.spJson.setRowHeaderView(numLineaJson);
+        this.spDef.setRowHeaderView(numLineaDef);
         this.taConsola.setEditable(false);
         this.setLocationRelativeTo(null);
         this.taJson.setText(VtnPrincipal.leerArchivo(this.archivoJson));
@@ -30,9 +36,9 @@ public class VtnEdicion extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        spJson = new javax.swing.JScrollPane();
         taJson = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        spDef = new javax.swing.JScrollPane();
         taDef = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
@@ -47,15 +53,15 @@ public class VtnEdicion extends javax.swing.JFrame {
 
         taJson.setColumns(20);
         taJson.setRows(5);
-        jScrollPane3.setViewportView(taJson);
+        spJson.setViewportView(taJson);
 
-        jTabbedPane1.addTab("resultado.json", jScrollPane3);
+        jTabbedPane1.addTab("resultado.json", spJson);
 
         taDef.setColumns(20);
         taDef.setRows(5);
-        jScrollPane2.setViewportView(taDef);
+        spDef.setViewportView(taDef);
 
-        jTabbedPane1.addTab("reportes.def", jScrollPane2);
+        jTabbedPane1.addTab("reportes.def", spDef);
         jTabbedPane1.addTab("Reportes", jScrollPane4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -185,10 +191,10 @@ public class VtnEdicion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane spDef;
+    private javax.swing.JScrollPane spJson;
     private javax.swing.JTextArea taConsola;
     private javax.swing.JTextArea taDef;
     private javax.swing.JTextArea taJson;
