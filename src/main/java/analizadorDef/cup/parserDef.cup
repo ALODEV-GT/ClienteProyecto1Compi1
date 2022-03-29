@@ -1,0 +1,401 @@
+package analizadorDef.cup;
+import java_cup.runtime.Symbol;
+import analizadorDef.tablaSimbolos.TablaSimbolosDef;
+import analizadorDef.tablaSimbolos.TerminoDef;
+import analizadorDef.tablaSimbolos.RolDef;
+
+parser code
+{: 
+    private boolean errores = false;
+    private TablaSimbolosDef tablaSimbolos;
+    private javax.swing.JTextArea taErrores;
+    private TerminoDef termino;
+
+    public parser(java_cup.runtime.Scanner s, TablaSimbolosDef tablaSimbolos, javax.swing.JTextArea taErrores){
+        this(s);
+        this.tablaSimbolos = tablaSimbolos;
+        this.taErrores = taErrores;
+    }
+
+    public boolean isErrores(){
+        return errores;
+    }
+
+    public void syntax_error(Symbol s){
+        errores = true;
+        taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        errores = true;
+        taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
+    }
+:};
+
+terminal String RESULT,SCORE,CLASES,VARIABLES,NOMBRE,TIPO,FUNCION,METODOS,PARAMETROS,COMENTARIOS,
+                INTEGER,STRING,FOR,ITERADOR,HASTA,ID,CADENA,ENTERO,ASIGNACION,P_COMA,PUNTO,COMA,
+                DOS_PUNTOS,PARENTESIS_A,PARENTESIS_C,CORCHETE_A,CORCHETE_C,MAS,MENOS,POR,DIVISION,
+                INICIO_ETIQUETA,FIN_COMENTARIO,MENOR_QUE,MAYOR_QUE,INICIO_ACCESO,FIN_ACCESO,
+                HTML,H1,H2,TABLE,TR,TH,TD,BR,TEXTO;
+
+non terminal String s0,v0,v1,v2,v3,v4,v5,v6,v7,v8,exp,valor;
+non terminal String c0,c1,c2,c3,c4;
+non terminal String a0,a1,a2,a3,a4;
+non terminal String m0,m1,m2,m3,m4;
+non terminal String o0,o1,o2,o3,o4;
+non terminal String h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13;
+non terminal String cs0,cs1,cs2,cs3;
+non terminal String for0,for1,for2,for3,for4,for5,for6,for7,for8,for9,for10,for11;
+non terminal String ch0,ch1,ch2,ch3;
+non terminal String td0,td1,td2,td3,td4;
+non terminal String th0,th1,th2,th3,th4;
+non terminal String tr0,tr1,tr2,tr3,tr4;
+non terminal String br0;
+non terminal String tabl0,tabl1,tabl2,tabl3,tabl4;
+non terminal String r0,r1,r2;
+
+precedence left MAS, MENOS;
+precedence left POR, DIVISION;
+precedence left PARENTESIS_A, PARENTESIS_C;
+
+start with s0;
+s0::= v0 s0
+| MENOR_QUE h0
+| ID v5 s0
+;
+v0::= STRING v1
+| INTEGER v1
+| error {:taErrores.append("Se esperaba el tipo de dato");:}
+;
+v1::= ID v2
+| error {:taErrores.append("Se esperaba un id");:}
+;
+v2::= ASIGNACION v3
+| COMA v1
+| P_COMA
+| error {:taErrores.append("Se esperaba =, coma o punto y coma");:}
+;
+v3::= exp v4
+| error {:taErrores.append("Se esperaba un valor");:}
+;
+v4::= P_COMA
+| error {:taErrores.append("Se esperaba punto y coma");:}
+;
+v5::= ASIGNACION v3 
+| error {:taErrores.append("Se esperaba =");:}
+; 
+exp ::= exp MAS exp        
+| exp MENOS exp            
+| exp POR exp              
+| exp DIVISION exp         
+| PARENTESIS_A exp PARENTESIS_C     
+| valor
+;
+valor::= CADENA
+| ENTERO
+| v6
+;
+v6::= RESULT v7
+;
+v7::= PUNTO v8
+| error {:taErrores.append("Se esperaba punto");:}
+;
+v8::= SCORE
+| CLASES c0
+| VARIABLES a0
+| METODOS m0
+| COMENTARIOS o0
+| error {:taErrores.append("Se esperaba SCORE, CLASES, VARIABLES, METODOS o COMENTARIOS");:}
+;
+c0::= CORCHETE_A c1
+| 
+;
+c1::= ENTERO c2
+| ID c2
+| error {:taErrores.append("Se esperaba el indice");:}
+;
+c2::= CORCHETE_C c3
+| error {:taErrores.append("Se esperaba corchete de cierre");:}
+;
+c3::= PUNTO c4
+|
+;
+c4::= NOMBRE
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE");:}
+;
+a0::= CORCHETE_A a1
+| 
+;
+a1::= ENTERO a2
+| ID a2
+| error {:taErrores.append("Se esperaba el indice");:}
+;
+a2::= CORCHETE_C a3
+| error {:taErrores.append("Se esperaba corchete de cierre");:}
+;
+a3::= PUNTO a4
+|
+;
+a4::= NOMBRE
+| TIPO
+| FUNCION
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o FUNCION");:}
+;
+m0::= CORCHETE_A m1
+| 
+;
+m1::= ENTERO m2
+| ID m2
+| error {:taErrores.append("Se esperaba el indice");:}
+;
+m2::= CORCHETE_C m3
+| error {:taErrores.append("Se esperaba corchete de cierre");:}
+;
+m3::= PUNTO m4
+|
+;
+m4::= NOMBRE
+| TIPO
+| PARAMETROS
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o PARAMETROS");:}
+;
+o0::= CORCHETE_A o1
+| 
+;
+o1::= ENTERO o2
+| ID o2
+| error {:taErrores.append("Se esperaba el indice");:}
+;
+o2::= CORCHETE_C o3
+| error {:taErrores.append("Se esperaba corchete de cierre");:}
+;
+o3::= PUNTO o4
+|
+;
+o4::= TEXTO
+| error {:taErrores.append("Se esperaba la palabra reservada TEXTO");:}
+;
+
+//HTML
+h0::= HTML h1
+| error {:taErrores.append("Se esperaba la palabra reservada HTML");:}
+;
+h1::= MAYOR_QUE h2
+| error {:taErrores.append("Se esperaba >");:}
+;
+h2::= MENOR_QUE h3
+| INICIO_ETIQUETA h13
+| error {:taErrores.append("Se esperaba < o </");:}
+;
+h3::= h5 h2
+| h6 h2
+| h7 h2
+| h8 h2
+| h9 h2
+| error {:taErrores.append("Se esperaba h1,h2,br,table y for");:}
+;
+h5::= H1 ch0
+;
+h6::= H2 cs0
+;
+h7::= BR br0
+;
+h8::= TABLE tabl0
+;
+h9::= FOR for0
+;
+h10::= TR tr0
+;
+h11::= TH th0
+;
+h12::= TD td0
+;
+h13::= HTML h4
+| error {:taErrores.append("Se esperaba la palabra reservada html");:}
+;
+
+//Etiqueta br
+br0::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta h1
+ch0::= MAYOR_QUE ch1
+| error {:taErrores.append("Se esperaba >");:}
+;
+ch1::= INICIO_ETIQUETA ch2
+| r0 ch1
+| error {:taErrores.append("Se esperaba </ o $$(");:}
+;
+ch2::= H1 ch3
+| error {:taErrores.append("Se esperaba h1");:}
+;
+ch3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta h2
+cs0::= MAYOR_QUE cs1
+| error {:taErrores.append("Se esperaba >");:}
+;
+cs1::= INICIO_ETIQUETA cs2
+| r0 cs1
+| error {:taErrores.append("Se esperaba </ o $$(");:}
+;
+cs2::= H2 cs3
+| error {:taErrores.append("Se esperaba h2");:}
+;
+cs3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+//Etiqueta tr
+tr0::= MAYOR_QUE tr1
+| error {:taErrores.append("Se esperaba >");:}
+;
+tr1::= INICIO_ETIQUETA tr2
+| r0 tr1
+| MENOR_QUE tr4
+| error {:taErrores.append("Se esperaba la <, $$( o </");:}
+;
+tr4::= h5 tr1
+| h6 tr1
+| h7 tr1
+| h11 tr1
+| h12 tr1
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,th o td");:}
+;
+tr2::= TR tr3
+| error {:taErrores.append("Se esperaba tr");:}
+;
+tr3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta td
+td0::= MAYOR_QUE td1
+| error {:taErrores.append("Se esperaba >");:}
+;
+td1::= INICIO_ETIQUETA td2
+| r0 td1
+| MENOR_QUE td4
+| error {:taErrores.append("Se esperaba </, $$( o <");:}
+;
+td4::= h5 td1
+| h6 td1
+| h7 td1
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br");:}
+;
+td2::= TD td3
+| error {:taErrores.append("Se esperaba la palabra reservada td");:}
+;
+td3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta th
+th0::= MAYOR_QUE th1
+| error {:taErrores.append("Se esperaba >");:}
+;
+th1::= INICIO_ETIQUETA th2
+| r0 th1
+| MENOR_QUE th4
+| error {:taErrores.append("Se esperaba </, $$( o <");:}
+;
+th4::= h5 th1
+| h6 th1
+| h7 th1
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2 o br");:}
+;
+th2::= TH th3
+| error {:taErrores.append("Se esperaba la palabra reservada th");:}
+;
+th3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta table
+tabl0::= MAYOR_QUE tabl1
+| error {:taErrores.append("Se esperaba >");:}
+;
+tabl1::= INICIO_ETIQUETA tabl2
+| r0 tabl1
+| MENOR_QUE tabl4
+| error {:taErrores.append("Se esperaba </, $$( o <");:}
+;
+tabl4::= h5 tabl1
+| h6 tabl1
+| h7 tabl1
+| h9 tabl1
+| h10 tabl1
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,for o tr");:}
+;
+tabl2::= TABLE tabl3
+| error {:taErrores.append("Se esperaba la palabra reservada table");:}
+;
+tabl3::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
+
+//Etiqueta for
+for0::= ITERADOR for1
+| error {:taErrores.append("Se esperaba la palabra reservada iterador");:}
+;
+for1::= DOS_PUNTOS for2
+| error {:taErrores.append("Se esperaban dos puntos");:}
+;
+for2::= ENTERO for3
+| ID for3
+| error {:taErrores.append("Se esperaba un entero o id");:}
+;
+for3::= HASTA for4 
+| error {:taErrores.append("Se esperaba la palabra reservada hasta");:}
+;
+for4::= DOS_PUNTOS for5
+| error {:taErrores.append("Se esperaban dos puntos");:}
+;
+for5::= ENTERO for6
+| ID  for6
+| error {:taErrores.append("Se esperaba un entero o id");:}
+;
+for6::= P_COMA for7
+| error {:taErrores.append("Se esperaba punto y coma");:}
+;
+for7::= MAYOR_QUE for8
+| error {:taErrores.append("Se esperaba >");:}
+;
+for8::= INICIO_ETIQUETA for9
+| r0 for8
+| MENOR_QUE for11
+| error {:taErrores.append("Se esperaba </, $$( o <");:}
+;
+for11::= h5 for8
+| h6 for8
+| h7 for8
+| h8 for8
+| h10 for8
+| h11 for8
+| h12 for8
+| error {:taErrores.append("Se esperaba h1,h2,br,table,tr,th o td");:}
+;
+for9::= FOR for10
+| error {:taErrores.append("Se esperaba la palabra reservada for");:}
+;
+for10::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:} 
+;
+
+//Acceso a variables
+r0::= INICIO_ACCESO r1
+;
+r1::= v6 r2
+| ID r2
+| error {:taErrores.append("Se esperaba un id o RESULT...");:}
+;
+r2::= FIN_ACCESO
+| error {:taErrores.append("Se esperaba )$$");:}
+;
+
+//CIERRE HTML
+h4::= MAYOR_QUE
+| error {:taErrores.append("Se esperaba >");:}
+;
