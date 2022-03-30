@@ -156,7 +156,6 @@ BR = "br"
 <YYINITIAL> {MAYOR_QUE}             {return symbol(sym.MAYOR_QUE, yytext());}
 <YYINITIAL> {COMENTARIO_BLOQUE}     {}
 <YYINITIAL> {INICIO_ETIQUETA}       {return symbol(sym.INICIO_ETIQUETA, yytext());}
-<YYINITIAL> {FIN_COMENTARIO}        {return symbol(sym.FIN_COMENTARIO, yytext());}
 <YYINITIAL> {INICIO_ACCESO}         {return symbol(sym.INICIO_ACCESO, yytext());}
 <YYINITIAL> {FIN_ACCESO}            {return symbol(sym.FIN_ACCESO, yytext());}
 <YYINITIAL> {FIN_LINEA}             {}

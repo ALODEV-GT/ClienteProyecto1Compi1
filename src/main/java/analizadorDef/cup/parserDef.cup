@@ -3,22 +3,43 @@ import java_cup.runtime.Symbol;
 import analizadorDef.tablaSimbolos.TablaSimbolosDef;
 import analizadorDef.tablaSimbolos.TerminoDef;
 import analizadorDef.tablaSimbolos.RolDef;
+import analizadorJson.tablaSimbolos.RolJson;
+import analizadorJson.tablaSimbolos.TablaSimbolosJson;
+import analizadorDef.tablaSimbolos.Entero;
+import analizadorDef.tablaSimbolos.Cadena;
+import analizadorJson.tablaSimbolos.TerminoJson;
 
 parser code
 {: 
     private boolean errores = false;
-    private TablaSimbolosDef tablaSimbolos;
+    private TablaSimbolosJson tablaSimbolosJson;
+    private TablaSimbolosDef tablaSimbolosDef;
     private javax.swing.JTextArea taErrores;
     private TerminoDef termino;
+    private StringBuilder codigoHtml;
+    private String tipo;
+    private int indice;
+    private RolJson rolJson;
+    private boolean agregar = true;
 
-    public parser(java_cup.runtime.Scanner s, TablaSimbolosDef tablaSimbolos, javax.swing.JTextArea taErrores){
+    public parser(java_cup.runtime.Scanner s, TablaSimbolosJson tablaSimbolosJson, javax.swing.JTextArea taErrores){
         this(s);
-        this.tablaSimbolos = tablaSimbolos;
+        this.tablaSimbolosJson = tablaSimbolosJson;
         this.taErrores = taErrores;
+        this.tablaSimbolosDef = new TablaSimbolosDef();
+        this.codigoHtml = new StringBuilder();
+    }
+
+    public StringBuilder getCodigoHtml(){
+        return this.codigoHtml;
     }
 
     public boolean isErrores(){
         return errores;
+    }
+
+    public void imprimirTablaSimbolosoDef(){
+        tablaSimbolosDef.imprimir();
     }
 
     public void syntax_error(Symbol s){
@@ -30,19 +51,52 @@ parser code
         errores = true;
         taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
     }
+
+    private void agregarErrorYaExiste(int numFila, String id){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". " + id + " ya existe.\n");
+    }
+
+    private void agregarErrorCasteo(int numFila){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". Tipos incompatibles.\n");
+    }
+
+    private void agregarErrorOperacionNoPermitida(int numFila){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". Operacion no permitida en un String.\n");
+    }
+
+    private void agregarErrorNoExisteVarJson(int numFila){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". No esta definido en el archivo JSON.\n");
+    }
+
+    private void agregarErrorNoExisteVarDef(int numFila, String lexema){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". La variable: " + lexema+" No existe.\n");
+    }
+
+    private void agregarErrorIndice(int numFila, String lexema){
+        errores = true;
+        taErrores.append("Error semantico. Linea:" + numFila +". La variable: " + lexema+" No es de tipo Integer.\n");
+    }
 :};
 
 terminal String RESULT,SCORE,CLASES,VARIABLES,NOMBRE,TIPO,FUNCION,METODOS,PARAMETROS,COMENTARIOS,
-                INTEGER,STRING,FOR,ITERADOR,HASTA,ID,CADENA,ENTERO,ASIGNACION,P_COMA,PUNTO,COMA,
+                STRING,FOR,ITERADOR,HASTA,ID,CADENA,ENTERO,ASIGNACION,P_COMA,PUNTO,COMA,
                 DOS_PUNTOS,PARENTESIS_A,PARENTESIS_C,CORCHETE_A,CORCHETE_C,MAS,MENOS,POR,DIVISION,
-                INICIO_ETIQUETA,FIN_COMENTARIO,MENOR_QUE,MAYOR_QUE,INICIO_ACCESO,FIN_ACCESO,
+                INICIO_ETIQUETA,MENOR_QUE,MAYOR_QUE,INICIO_ACCESO,FIN_ACCESO,
                 HTML,H1,H2,TABLE,TR,TH,TD,BR,TEXTO;
+terminal Integer INTEGER;
 
-non terminal String s0,v0,v1,v2,v3,v4,v5,v6,v7,v8,exp,valor;
-non terminal String c0,c1,c2,c3,c4;
-non terminal String a0,a1,a2,a3,a4;
-non terminal String m0,m1,m2,m3,m4;
-non terminal String o0,o1,o2,o3,o4;
+non terminal String s0,v0,v1,v2,v3,v4,v5;
+non terminal Object v6,v7,v8;
+non terminal Object exp,valor;
+non terminal Object c0,c1,c2,c3,c4;
+non terminal Object a0,a1,a2,a3,a4;
+non terminal Object m0,m1,m2,m3,m4;
+non terminal Object o0,o1,o2,o3,o4;
 non terminal String h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13;
 non terminal String cs0,cs1,cs2,cs3;
 non terminal String for0,for1,for2,for3,for4,for5,for6,for7,for8,for9,for10,for11;
@@ -61,138 +115,138 @@ precedence left PARENTESIS_A, PARENTESIS_C;
 start with s0;
 s0::= v0 s0
 | MENOR_QUE h0
-| ID v5 s0
+| ID:var1 {:agregar=false; termino = tablaSimbolosDef.getTermino(var1); if(termino == null){agregarErrorNoExisteVarDef(var1right, var1);}:} v5 s0
 ;
-v0::= STRING v1
-| INTEGER v1
-| error {:taErrores.append("Se esperaba el tipo de dato");:}
+v0::= STRING {:agregar = true; termino = new TerminoDef("String"); tipo = "String";:} v1
+| INTEGER {:agregar = true; termino = new TerminoDef("Integer"); tipo = "Integer";:} v1
+| error {:taErrores.append("Se esperaba el tipo de dato\n");:}
 ;
-v1::= ID v2
-| error {:taErrores.append("Se esperaba un id");:}
+v1::= ID:var1 {:if(termino == null){termino = new TerminoDef(tipo);} termino.setId(var1); :} v2
+| error {:taErrores.append("Se esperaba un id\n");:}
 ;
 v2::= ASIGNACION v3
-| COMA v1
-| P_COMA
-| error {:taErrores.append("Se esperaba =, coma o punto y coma");:}
+| COMA:var1 {:boolean agregado = tablaSimbolosDef.agregarTermino(termino); if(!agregado){agregarErrorYaExiste(var1right, termino.getId());} termino = null;:} v1
+| P_COMA:var1 {:boolean agregado = tablaSimbolosDef.agregarTermino(termino); if(!agregado){agregarErrorYaExiste(var1right, termino.getId());}:}
+| error {:taErrores.append("Se esperaba =, coma o punto y coma\n");:}
 ;
-v3::= exp v4
-| error {:taErrores.append("Se esperaba un valor");:}
+v3::= exp:var1 v4 {: try{String tipo = (var1 instanceof Entero)? "Integer":"String";  if(tipo.equals(termino.getTipo())){termino.setValor(var1.toString()); if(agregar){boolean agregado = tablaSimbolosDef.agregarTermino(termino); if(!agregado){agregarErrorYaExiste(var1right, termino.getId());}}}else{agregarErrorCasteo(var1right);}}catch(Exception ex){agregarErrorOperacionNoPermitida(var1right);}:}
+| error {:taErrores.append("Se esperaba un valor\n");:}
 ;
 v4::= P_COMA
-| error {:taErrores.append("Se esperaba punto y coma");:}
+| error {:taErrores.append("Se esperaba punto y coma\n");:}
 ;
 v5::= ASIGNACION v3 
-| error {:taErrores.append("Se esperaba =");:}
+| error {:taErrores.append("Se esperaba =\n");:}
 ; 
-exp ::= exp MAS exp        
-| exp MENOS exp            
-| exp POR exp              
-| exp DIVISION exp         
-| PARENTESIS_A exp PARENTESIS_C     
-| valor
+exp ::= exp:var1 MAS exp:var2 {:try{if(var1 instanceof Entero && var2 instanceof Entero){RESULT= new Entero(((Entero)var1).getEntero() + ((Entero)var2).getEntero());}else{RESULT= new Cadena(var1.toString() + var2.toString());}}catch(Exception ex){agregarErrorCasteo(var1right);}:}        
+| exp:var1 MENOS exp:var2       {:try{RESULT=new Entero(((Entero)var1).getEntero() - ((Entero)var2).getEntero());}catch(Exception ex){agregarErrorCasteo(var1right);}:}        
+| exp:var1 POR exp:var2         {:try{RESULT=new Entero(((Entero)var1).getEntero() * ((Entero)var2).getEntero());}catch(Exception ex){agregarErrorCasteo(var1right);}:}
+| exp:var1 DIVISION exp:var2    {:try{RESULT=new Entero(((Entero)var1).getEntero() / ((Entero)var2).getEntero());}catch(Exception ex){agregarErrorCasteo(var1right);}:}
+| PARENTESIS_A exp:var1 PARENTESIS_C {:RESULT=var1;:}     
+| valor:var1 {:RESULT= var1;:}
 ;
-valor::= CADENA
-| ENTERO
-| v6
+valor::= CADENA:var1 {:RESULT=new Cadena(var1);:}
+| ENTERO:var1 {:RESULT=new Entero(Integer.valueOf(var1));:}
+| v6:var1 {:RESULT=var1;:}
 ;
-v6::= RESULT v7
+v6::= RESULT v7:var1 {:RESULT=var1;:}
 ;
-v7::= PUNTO v8
-| error {:taErrores.append("Se esperaba punto");:}
+v7::= PUNTO v8:var1  {:RESULT=var1;:}
+| error {:taErrores.append("Se esperaba punto\n");:}
 ;
-v8::= SCORE
-| CLASES c0
-| VARIABLES a0
-| METODOS m0
-| COMENTARIOS o0
-| error {:taErrores.append("Se esperaba SCORE, CLASES, VARIABLES, METODOS o COMENTARIOS");:}
+v8::= SCORE {:RESULT=new Cadena(tablaSimbolosJson.getScore());:}
+| CLASES {:rolJson=RolJson.CLASE;:} c0:var2 {:if(var2==null){String descClases = tablaSimbolosJson.getClases(); if(descClases==null){agregarErrorNoExisteVarJson(var2right);}else{RESULT=new Cadena(descClases);}}else{RESULT=var2;}:}
+| VARIABLES {:rolJson=RolJson.VARIABLE;:} a0:var2 {:if(var2==null){String descVars = tablaSimbolosJson.getVariables(); if(descVars==null){agregarErrorNoExisteVarJson(var2right);}else{RESULT=new Cadena(descVars);}}else{RESULT=var2;}:}
+| METODOS {:rolJson=RolJson.METODO;:} m0:var2 {:if(var2==null){String descMets = tablaSimbolosJson.getMetodos(); if(descMets==null){agregarErrorNoExisteVarJson(var2right);}else{RESULT=new Cadena(descMets);}}else{RESULT=var2;}:}
+| COMENTARIOS {:rolJson=RolJson.COMENTARIO;:} o0:var2 {:if(var2==null){String descComs = tablaSimbolosJson.getComentarios(); if(descComs==null){agregarErrorNoExisteVarJson(var2right);}else{RESULT=new Cadena(descComs);}}else{RESULT=var2;}:}
+| error {:taErrores.append("Se esperaba SCORE, CLASES, VARIABLES, METODOS o COMENTARIOS\n");:}
 ;
-c0::= CORCHETE_A c1
-| 
+c0::= CORCHETE_A c1:var1 {:RESULT= var1;:}
+| {:RESULT=null;:}
 ;
-c1::= ENTERO c2
-| ID c2
-| error {:taErrores.append("Se esperaba el indice");:}
+c1::= ENTERO:var1 {:indice = Integer.valueOf(var1);:} c2:var2 {:if(var2==null){String descClas = tablaSimbolosJson.getClase(Integer.valueOf(var1)); if(descClas==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descClas);}}else{RESULT=var2;}:}
+| ID:var1 {:try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integer.valueOf(td.getValor());}else{agregarErrorNoExisteVarDef(var1right, var1);}}catch(Exception ex){agregarErrorIndice(var1right,var1);}:} c2:var2 {:if(var2==null){String descClas = tablaSimbolosJson.getClase(indice); if(descClas==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descClas);}}else{RESULT=var2;}:}
+| error {:taErrores.append("Se esperaba el indice\n");:}
 ;
-c2::= CORCHETE_C c3
-| error {:taErrores.append("Se esperaba corchete de cierre");:}
+c2::= CORCHETE_C c3:var1 {:RESULT=var1;:}
+| error {:taErrores.append("Se esperaba corchete de cierre\n");:}
 ;
-c3::= PUNTO c4
-|
+c3::= PUNTO c4:var1 {:RESULT=var1;:}
+| {:RESULT = null;:}
 ;
-c4::= NOMBRE
-| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE");:}
+c4::= NOMBRE:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getNombre());}else{agregarErrorNoExisteVarJson(var1right);}:}
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE\n");:}
 ;
-a0::= CORCHETE_A a1
-| 
+a0::= CORCHETE_A a1:var1 {:RESULT=var1;:}
+| {:RESULT=null;:}
 ;
-a1::= ENTERO a2
-| ID a2
-| error {:taErrores.append("Se esperaba el indice");:}
+a1::= ENTERO:var1 {:indice = Integer.valueOf(var1);:} a2:var2 {:if(var2==null){String descVar = tablaSimbolosJson.getVariable(Integer.valueOf(var1)); if(descVar==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descVar);}}else{RESULT=var2;}:}
+| ID:var1 {:try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integer.valueOf(td.getValor());}else{agregarErrorNoExisteVarDef(var1right, var1);}}catch(Exception ex){agregarErrorIndice(var1right,var1);}:} a2:var2 {:if(var2==null){String descVar = tablaSimbolosJson.getVariable(indice); if(descVar==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descVar);}}else{RESULT=var2;}:}
+| error {:taErrores.append("Se esperaba el indice\n");:}
 ;
-a2::= CORCHETE_C a3
-| error {:taErrores.append("Se esperaba corchete de cierre");:}
+a2::= CORCHETE_C a3:var1 {:RESULT=var1;:}
+| error {:taErrores.append("Se esperaba corchete de cierre\n");:}
 ;
-a3::= PUNTO a4
-|
+a3::= PUNTO a4:var1 {:RESULT=var1;:}
+|   {:RESULT = null;:}
 ;
-a4::= NOMBRE
-| TIPO
-| FUNCION
-| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o FUNCION");:}
+a4::= NOMBRE:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getNombre());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| TIPO:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getTipo());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| FUNCION:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getFuncion());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o FUNCION\n");:}
 ;
-m0::= CORCHETE_A m1
-| 
+m0::= CORCHETE_A m1:var1 {:RESULT=var1;:}
+| {:RESULT = null;:}
 ;
-m1::= ENTERO m2
-| ID m2
-| error {:taErrores.append("Se esperaba el indice");:}
+m1::= ENTERO:var1 {:indice = Integer.valueOf(var1);:} m2:var2 {:if(var2==null){String descMet = tablaSimbolosJson.getMetodo(Integer.valueOf(var1)); if(descMet==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descMet);}}else{RESULT=var2;}:}
+| ID:var1 {:try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integer.valueOf(td.getValor());}else{agregarErrorNoExisteVarDef(var1right, var1);}}catch(Exception ex){agregarErrorIndice(var1right,var1);}:} m2:var2 {:if(var2==null){String descMet = tablaSimbolosJson.getMetodo(indice); if(descMet==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descMet);}}else{RESULT=var2;}:}
+| error {:taErrores.append("Se esperaba el indice\n");:}
 ;
-m2::= CORCHETE_C m3
-| error {:taErrores.append("Se esperaba corchete de cierre");:}
+m2::= CORCHETE_C m3:var1 {:RESULT=var1;:}
+| error {:taErrores.append("Se esperaba corchete de cierre\n");:}
 ;
-m3::= PUNTO m4
-|
+m3::= PUNTO m4:var1 {:RESULT=var1;:}
+| {:RESULT = null;:}
 ;
-m4::= NOMBRE
-| TIPO
-| PARAMETROS
-| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o PARAMETROS");:}
+m4::= NOMBRE:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getNombre());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| TIPO:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getTipo());}else{agregarErrorNoExisteVarJson(var1right);}:}   
+| PARAMETROS:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Entero(termJ.getParametros());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| error {:taErrores.append("Se esperaba la palabra reservada NOMBRE, TIPO o PARAMETROS\n");:}
 ;
-o0::= CORCHETE_A o1
-| 
+o0::= CORCHETE_A o1:var1 {:RESULT=var1;:}
+| {:RESULT = null;:}
 ;
-o1::= ENTERO o2
-| ID o2
-| error {:taErrores.append("Se esperaba el indice");:}
+o1::= ENTERO:var1 {:indice = Integer.valueOf(var1);:} o2:var2 {:if(var2==null){String descCom = tablaSimbolosJson.getComentario(Integer.valueOf(var1)); if(descCom==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descCom);}}else{RESULT=var2;}:}
+| ID:var1 {:try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integer.valueOf(td.getValor());}else{agregarErrorNoExisteVarDef(var1right, var1);}}catch(Exception ex){agregarErrorIndice(var1right,var1);}:} o2:var2 {:if(var2==null){String descCom = tablaSimbolosJson.getComentario(indice); if(descCom==null){agregarErrorNoExisteVarJson(var1right);}else{RESULT=new Cadena(descCom);}}else{RESULT=var2;}:}
+| error {:taErrores.append("Se esperaba el indice\n");:}
 ;
-o2::= CORCHETE_C o3
-| error {:taErrores.append("Se esperaba corchete de cierre");:}
+o2::= CORCHETE_C o3:var1 {:RESULT=var1;:}
+| error {:taErrores.append("Se esperaba corchete de cierre\n");:}
 ;
-o3::= PUNTO o4
-|
+o3::= PUNTO o4:var1 {:RESULT=var1;:}
+| {:RESULT = null;:}
 ;
-o4::= TEXTO
-| error {:taErrores.append("Se esperaba la palabra reservada TEXTO");:}
+o4::= TEXTO:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJson, indice); if(termJ!=null){RESULT=new Cadena(termJ.getNombre());}else{agregarErrorNoExisteVarJson(var1right);}:} 
+| error {:taErrores.append("Se esperaba la palabra reservada TEXTO\n");:}
 ;
 
 //HTML
 h0::= HTML h1
-| error {:taErrores.append("Se esperaba la palabra reservada HTML");:}
+| error {:taErrores.append("Se esperaba la palabra reservada HTML\n");:}
 ;
 h1::= MAYOR_QUE h2
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 h2::= MENOR_QUE h3
 | INICIO_ETIQUETA h13
-| error {:taErrores.append("Se esperaba < o </");:}
+| error {:taErrores.append("Se esperaba < o </\n");:}
 ;
 h3::= h5 h2
 | h6 h2
 | h7 h2
 | h8 h2
 | h9 h2
-| error {:taErrores.append("Se esperaba h1,h2,br,table y for");:}
+| error {:taErrores.append("Se esperaba h1,h2,br,table y for\n");:}
 ;
 h5::= H1 ch0
 ;
@@ -211,162 +265,162 @@ h11::= TH th0
 h12::= TD td0
 ;
 h13::= HTML h4
-| error {:taErrores.append("Se esperaba la palabra reservada html");:}
+| error {:taErrores.append("Se esperaba la palabra reservada html\n");:}
 ;
 
 //Etiqueta br
 br0::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta h1
 ch0::= MAYOR_QUE ch1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 ch1::= INICIO_ETIQUETA ch2
 | r0 ch1
-| error {:taErrores.append("Se esperaba </ o $$(");:}
+| error {:taErrores.append("Se esperaba </ o $$(\n");:}
 ;
 ch2::= H1 ch3
-| error {:taErrores.append("Se esperaba h1");:}
+| error {:taErrores.append("Se esperaba h1\n");:}
 ;
 ch3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta h2
 cs0::= MAYOR_QUE cs1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 cs1::= INICIO_ETIQUETA cs2
 | r0 cs1
-| error {:taErrores.append("Se esperaba </ o $$(");:}
+| error {:taErrores.append("Se esperaba </ o $$(\n");:}
 ;
 cs2::= H2 cs3
-| error {:taErrores.append("Se esperaba h2");:}
+| error {:taErrores.append("Se esperaba h2\n");:}
 ;
 cs3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 //Etiqueta tr
 tr0::= MAYOR_QUE tr1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 tr1::= INICIO_ETIQUETA tr2
 | r0 tr1
 | MENOR_QUE tr4
-| error {:taErrores.append("Se esperaba la <, $$( o </");:}
+| error {:taErrores.append("Se esperaba la <, $$( o </\n");:}
 ;
 tr4::= h5 tr1
 | h6 tr1
 | h7 tr1
 | h11 tr1
 | h12 tr1
-| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,th o td");:}
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,th o td\n");:}
 ;
 tr2::= TR tr3
-| error {:taErrores.append("Se esperaba tr");:}
+| error {:taErrores.append("Se esperaba tr\n");:}
 ;
 tr3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta td
 td0::= MAYOR_QUE td1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 td1::= INICIO_ETIQUETA td2
 | r0 td1
 | MENOR_QUE td4
-| error {:taErrores.append("Se esperaba </, $$( o <");:}
+| error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
 td4::= h5 td1
 | h6 td1
 | h7 td1
-| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br");:}
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br\n");:}
 ;
 td2::= TD td3
-| error {:taErrores.append("Se esperaba la palabra reservada td");:}
+| error {:taErrores.append("Se esperaba la palabra reservada td\n");:}
 ;
 td3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta th
 th0::= MAYOR_QUE th1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 th1::= INICIO_ETIQUETA th2
 | r0 th1
 | MENOR_QUE th4
-| error {:taErrores.append("Se esperaba </, $$( o <");:}
+| error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
 th4::= h5 th1
 | h6 th1
 | h7 th1
-| error {:taErrores.append("Se esperaba la palabra reservada h1,h2 o br");:}
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2 o br\n");:}
 ;
 th2::= TH th3
-| error {:taErrores.append("Se esperaba la palabra reservada th");:}
+| error {:taErrores.append("Se esperaba la palabra reservada th\n");:}
 ;
 th3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta table
 tabl0::= MAYOR_QUE tabl1
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 tabl1::= INICIO_ETIQUETA tabl2
 | r0 tabl1
 | MENOR_QUE tabl4
-| error {:taErrores.append("Se esperaba </, $$( o <");:}
+| error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
 tabl4::= h5 tabl1
 | h6 tabl1
 | h7 tabl1
 | h9 tabl1
 | h10 tabl1
-| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,for o tr");:}
+| error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,for o tr\n");:}
 ;
 tabl2::= TABLE tabl3
-| error {:taErrores.append("Se esperaba la palabra reservada table");:}
+| error {:taErrores.append("Se esperaba la palabra reservada table\n");:}
 ;
 tabl3::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta for
 for0::= ITERADOR for1
-| error {:taErrores.append("Se esperaba la palabra reservada iterador");:}
+| error {:taErrores.append("Se esperaba la palabra reservada iterador\n");:}
 ;
 for1::= DOS_PUNTOS for2
-| error {:taErrores.append("Se esperaban dos puntos");:}
+| error {:taErrores.append("Se esperaban dos puntos\n");:}
 ;
 for2::= ENTERO for3
 | ID for3
-| error {:taErrores.append("Se esperaba un entero o id");:}
+| error {:taErrores.append("Se esperaba un entero o id\n");:}
 ;
 for3::= HASTA for4 
-| error {:taErrores.append("Se esperaba la palabra reservada hasta");:}
+| error {:taErrores.append("Se esperaba la palabra reservada hasta\n");:}
 ;
 for4::= DOS_PUNTOS for5
-| error {:taErrores.append("Se esperaban dos puntos");:}
+| error {:taErrores.append("Se esperaban dos puntos\n");:}
 ;
 for5::= ENTERO for6
 | ID  for6
-| error {:taErrores.append("Se esperaba un entero o id");:}
+| error {:taErrores.append("Se esperaba un entero o id\n");:}
 ;
 for6::= P_COMA for7
-| error {:taErrores.append("Se esperaba punto y coma");:}
+| error {:taErrores.append("Se esperaba punto y coma\n");:}
 ;
 for7::= MAYOR_QUE for8
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;
 for8::= INICIO_ETIQUETA for9
 | r0 for8
 | MENOR_QUE for11
-| error {:taErrores.append("Se esperaba </, $$( o <");:}
+| error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
 for11::= h5 for8
 | h6 for8
@@ -375,13 +429,13 @@ for11::= h5 for8
 | h10 for8
 | h11 for8
 | h12 for8
-| error {:taErrores.append("Se esperaba h1,h2,br,table,tr,th o td");:}
+| error {:taErrores.append("Se esperaba h1,h2,br,table,tr,th o td\n");:}
 ;
 for9::= FOR for10
-| error {:taErrores.append("Se esperaba la palabra reservada for");:}
+| error {:taErrores.append("Se esperaba la palabra reservada for\n");:}
 ;
 for10::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:} 
+| error {:taErrores.append("Se esperaba >\n");:} 
 ;
 
 //Acceso a variables
@@ -389,13 +443,13 @@ r0::= INICIO_ACCESO r1
 ;
 r1::= v6 r2
 | ID r2
-| error {:taErrores.append("Se esperaba un id o RESULT...");:}
+| error {:taErrores.append("Se esperaba un id o RESULT...\n");:}
 ;
 r2::= FIN_ACCESO
-| error {:taErrores.append("Se esperaba )$$");:}
+| error {:taErrores.append("Se esperaba )$$\n");:}
 ;
 
 //CIERRE HTML
 h4::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >");:}
+| error {:taErrores.append("Se esperaba >\n");:}
 ;

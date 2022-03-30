@@ -10,52 +10,51 @@ public class sym {
   /* terminals */
   public static final int PARAMETROS = 10;
   public static final int TIPO = 7;
-  public static final int POR = 31;
+  public static final int POR = 30;
   public static final int NOMBRE = 6;
-  public static final int ENTERO = 19;
+  public static final int ENTERO = 18;
   public static final int FUNCION = 8;
   public static final int SCORE = 3;
-  public static final int INTEGER = 12;
+  public static final int INTEGER = 46;
   public static final int COMENTARIOS = 11;
-  public static final int DOS_PUNTOS = 24;
-  public static final int CORCHETE_C = 28;
-  public static final int CORCHETE_A = 27;
-  public static final int ITERADOR = 15;
-  public static final int FOR = 14;
-  public static final int HASTA = 16;
-  public static final int INICIO_ACCESO = 37;
-  public static final int FIN_COMENTARIO = 34;
+  public static final int DOS_PUNTOS = 23;
+  public static final int CORCHETE_C = 27;
+  public static final int CORCHETE_A = 26;
+  public static final int ITERADOR = 14;
+  public static final int FOR = 13;
+  public static final int HASTA = 15;
+  public static final int INICIO_ACCESO = 35;
   public static final int CLASES = 4;
-  public static final int ID = 17;
+  public static final int ID = 16;
   public static final int EOF = 0;
-  public static final int INICIO_ETIQUETA = 33;
-  public static final int TABLE = 42;
+  public static final int INICIO_ETIQUETA = 32;
+  public static final int TABLE = 40;
   public static final int error = 1;
-  public static final int COMA = 23;
-  public static final int CADENA = 18;
-  public static final int MENOS = 30;
-  public static final int MAYOR_QUE = 36;
-  public static final int BR = 46;
-  public static final int ASIGNACION = 20;
+  public static final int COMA = 22;
+  public static final int CADENA = 17;
+  public static final int MENOS = 29;
+  public static final int MAYOR_QUE = 34;
+  public static final int BR = 44;
+  public static final int ASIGNACION = 19;
   public static final int METODOS = 9;
-  public static final int TR = 43;
+  public static final int TR = 41;
   public static final int VARIABLES = 5;
-  public static final int PUNTO = 22;
-  public static final int PARENTESIS_C = 26;
-  public static final int FIN_ACCESO = 38;
-  public static final int PARENTESIS_A = 25;
-  public static final int TH = 44;
-  public static final int P_COMA = 21;
-  public static final int STRING = 13;
-  public static final int TD = 45;
-  public static final int MENOR_QUE = 35;
-  public static final int TEXTO = 47;
-  public static final int HTML = 39;
-  public static final int DIVISION = 32;
-  public static final int H2 = 41;
-  public static final int H1 = 40;
+  public static final int PUNTO = 21;
+  public static final int PARENTESIS_C = 25;
+  public static final int FIN_ACCESO = 36;
+  public static final int PARENTESIS_A = 24;
+  public static final int TH = 42;
+  public static final int P_COMA = 20;
+  public static final int STRING = 12;
+  public static final int TD = 43;
+  public static final int MENOR_QUE = 33;
+  public static final int TEXTO = 45;
+  public static final int HTML = 37;
+  public static final int DIVISION = 31;
+  public static final int H2 = 39;
+  public static final int H1 = 38;
   public static final int RESULT = 2;
-  public static final int MAS = 29;
+  public static final int MAS = 28;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -69,7 +68,6 @@ public class sym {
   "METODOS",
   "PARAMETROS",
   "COMENTARIOS",
-  "INTEGER",
   "STRING",
   "FOR",
   "ITERADOR",
@@ -91,7 +89,6 @@ public class sym {
   "POR",
   "DIVISION",
   "INICIO_ETIQUETA",
-  "FIN_COMENTARIO",
   "MENOR_QUE",
   "MAYOR_QUE",
   "INICIO_ACCESO",
@@ -104,7 +101,8 @@ public class sym {
   "TH",
   "TD",
   "BR",
-  "TEXTO"
+  "TEXTO",
+  "INTEGER"
   };
 }
 

@@ -17,6 +17,10 @@ public class TerminoDef {
     public TerminoDef() {
     }
 
+    public TerminoDef(String tipo) {
+        this.tipo = tipo;
+    }
+
     public RolDef getRol() {
         return rol;
     }

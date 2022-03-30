@@ -9,11 +9,39 @@ public class TablaSimbolosDef {
     public TablaSimbolosDef() {
     }
 
-    public void agregarTermino(TerminoDef termino) {
-        this.variables.add(termino);
+    public boolean agregarTermino(TerminoDef termino) {
+        boolean agregado = false;
+        if (!this.existe(termino.getId())) {
+            this.variables.add(termino);
+            agregado = true;
+            System.out.println("Se agrego: " + termino);
+        }
+        return agregado;
+    }
+
+    public boolean existe(String id) {
+        boolean existe = false;
+        for (TerminoDef td : variables) {
+            if (td.getId().equals(id)) {
+                existe = true;
+                break;
+            }
+        }
+        return existe;
     }
     
-    public void imprimirVariables(){
+    public TerminoDef getTermino(String id){
+        TerminoDef termino = null;
+        for (TerminoDef td: variables) {
+            if (td.getId().equals(id)) {
+                termino = td;
+                break;
+            }
+        }
+        return termino;
+    }
+
+    public void imprimir() {
         for (int i = 0; i < this.variables.size(); i++) {
             System.out.println(variables.get(i));
         }

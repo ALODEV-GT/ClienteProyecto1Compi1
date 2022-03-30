@@ -26,7 +26,7 @@ public class Analizar {
         try {
             par.parse();
             if (!par.isErrores()) {
-                taConsola.append("Analisis del Json correcto");
+                taConsola.append("Analisis del Json correcto\n");
             }
         } catch (Exception ex) {
             ex.printStackTrace(System.out);

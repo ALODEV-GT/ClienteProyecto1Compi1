@@ -1,5 +1,6 @@
 package frontend;
 
+import analizadorDef.analizador.AnalizarDef;
 import analizadorJson.analizador.Analizar;
 import analizadorJson.tablaSimbolos.TablaSimbolosJson;
 import java.io.File;
@@ -151,7 +152,13 @@ public class VtnEdicion extends javax.swing.JFrame {
         this.taConsola.setText(null);
         Analizar analizar = new Analizar(taJson.getText(), taConsola, this.tablaSimbolosJson);
         analizar.analizar();
-        this.tablaSimbolosJson.imprimirTabla();
+        //this.tablaSimbolosJson.imprimirTabla();
+        //Manejar por si hay errores, asi no pasar al analisis del HTML
+
+        //ANALISIS DEL HTML
+        AnalizarDef analizadorDef = new AnalizarDef(taDef.getText(), taConsola, tablaSimbolosJson);
+        analizadorDef.analizar();
+
     }//GEN-LAST:event_btnEjecutarActionPerformed
 
     public void guardar() {
