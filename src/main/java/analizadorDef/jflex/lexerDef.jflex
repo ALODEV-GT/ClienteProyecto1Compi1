@@ -48,7 +48,7 @@ PARAMETROS = "Parametros"
 COMENTARIOS = "Comentarios"
 INTEGER = "Integer"
 STRING  = "String"
-FOR = "for"
+//FOR = "for"
 ITERADOR = "iterador"
 HASTA = "hasta"
 TEXTO = "Texto"
@@ -125,7 +125,7 @@ BR = "br"
 <YYINITIAL> {TEXTO}                 {return symbol(sym.TEXTO, yytext());}
 <YYINITIAL> {INTEGER}               {return symbol(sym.INTEGER, yytext());}
 <YYINITIAL> {STRING}                {return symbol(sym.STRING, yytext());}
-<YYINITIAL> {FOR}                   {return symbol(sym.FOR, yytext());}
+//<YYINITIAL> {FOR}                   {return symbol(sym.FOR, yytext());}
 <YYINITIAL> {ITERADOR}              {return symbol(sym.ITERADOR, yytext());}
 <YYINITIAL> {HASTA}                 {return symbol(sym.HASTA, yytext());}
 <YYINITIAL> {HTML}                  {return symbol(sym.HTML, yytext());}

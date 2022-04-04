@@ -29,6 +29,7 @@ public class AnalizarDef {
             par.imprimirTablaSimbolosoDef();
             if (!par.isErrores()) {
                 taConsola.append("Analisis del Def correcto\n");
+                System.out.println(par.getCodigoHtml());
             }
         } catch (Exception ex) {
             ex.printStackTrace(System.out);

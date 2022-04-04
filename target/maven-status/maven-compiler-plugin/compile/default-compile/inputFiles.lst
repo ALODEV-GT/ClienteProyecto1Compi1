@@ -6,6 +6,7 @@
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/tablaSimbolos/RolDef.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/cup/parser.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/tablaSimbolos/TablaSimbolosDef.java
+/home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/analizador/AnalizarDef.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorJson/tablaSimbolos/TerminoJson.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/frontend/VtnEdicion.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/jflex/LexerDef.java
@@ -15,7 +16,8 @@
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/sockets/Recibir.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/sockets/Envio.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorJson/analizador/Analizar.java
-/home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/analizador/Analizar.java
+/home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/tablaSimbolos/Entero.java
+/home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/tablaSimbolos/Cadena.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/sockets/Cliente.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorDef/tablaSimbolos/TerminoDef.java
 /home/midik/NetBeansProjects/ClienteProyecto1Compi1/src/main/java/analizadorJson/cup/sym.java

@@ -6,9 +6,11 @@ frontend/VtnPrincipal$2.class
 analizadorDef/cup/parser.class
 analizadorDef/cup/sym.class
 frontend/VtnPrincipal$3.class
+analizadorDef/tablaSimbolos/Cadena.class
+analizadorDef/tablaSimbolos/Entero.class
 frontend/NumeroLinea.class
 frontend/NumeroLinea$1.class
-analizadorDef/analizador/Analizar.class
+analizadorDef/analizador/AnalizarDef.class
 analizadorJson/tablaSimbolos/RolJson.class
 analizadorDef/tablaSimbolos/RolDef.class
 analizadorJson/tablaSimbolos/TablaSimbolosJson$1.class

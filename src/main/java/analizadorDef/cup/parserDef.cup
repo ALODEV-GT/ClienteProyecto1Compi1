@@ -84,7 +84,7 @@ parser code
 :};
 
 terminal String RESULT,SCORE,CLASES,VARIABLES,NOMBRE,TIPO,FUNCION,METODOS,PARAMETROS,COMENTARIOS,
-                STRING,FOR,ITERADOR,HASTA,ID,CADENA,ENTERO,ASIGNACION,P_COMA,PUNTO,COMA,
+                STRING,ITERADOR,HASTA,ID,CADENA,ENTERO,ASIGNACION,P_COMA,PUNTO,COMA,
                 DOS_PUNTOS,PARENTESIS_A,PARENTESIS_C,CORCHETE_A,CORCHETE_C,MAS,MENOS,POR,DIVISION,
                 INICIO_ETIQUETA,MENOR_QUE,MAYOR_QUE,INICIO_ACCESO,FIN_ACCESO,
                 HTML,H1,H2,TABLE,TR,TH,TD,BR,TEXTO;
@@ -97,9 +97,8 @@ non terminal Object c0,c1,c2,c3,c4;
 non terminal Object a0,a1,a2,a3,a4;
 non terminal Object m0,m1,m2,m3,m4;
 non terminal Object o0,o1,o2,o3,o4;
-non terminal String h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13;
+non terminal String h0,h1,h2,h3,h4,h5,h6,h7,h8,h10,h11,h12,h13;
 non terminal String cs0,cs1,cs2,cs3;
-non terminal String for0,for1,for2,for3,for4,for5,for6,for7,for8,for9,for10,for11;
 non terminal String ch0,ch1,ch2,ch3;
 non terminal String td0,td1,td2,td3,td4;
 non terminal String th0,th1,th2,th3,th4;
@@ -231,215 +230,163 @@ o4::= TEXTO:var1 {:TerminoJson termJ = tablaSimbolosJson.encontrarTermino(rolJso
 ;
 
 //HTML
-h0::= HTML h1
+h0::= HTML:var1 h1:var2 {:codigoHtml.append("<" + var1 + var2);:}
 | error {:taErrores.append("Se esperaba la palabra reservada HTML\n");:}
 ;
-h1::= MAYOR_QUE h2
+h1::= MAYOR_QUE:var1 h2:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-h2::= MENOR_QUE h3
-| INICIO_ETIQUETA h13
+h2::= MENOR_QUE:var1 h3:var2 {:RESULT=var1 + var2;:}
+| INICIO_ETIQUETA:var1 h13:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba < o </\n");:}
 ;
-h3::= h5 h2
-| h6 h2
-| h7 h2
-| h8 h2
-| h9 h2
+h3::= h5:var1 h2:var2 {:RESULT=var1 + var2;:}
+| h6:var1 h2:var2 {:RESULT=var1 + var2;:}
+| h7:var1 h2:var2 {:RESULT=var1 + var2;:}
+| h8:var1 h2:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba h1,h2,br,table y for\n");:}
 ;
-h5::= H1 ch0
+h5::= H1:var1 ch0:var2 {:RESULT=var1 + var2;:}
 ;
-h6::= H2 cs0
+h6::= H2:var1 cs0:var2 {:RESULT=var1 + var2;:}
 ;
-h7::= BR br0
+h7::= BR:var1 br0:var2 {:RESULT=var1 + var2;:}
 ;
-h8::= TABLE tabl0
+h8::= TABLE:var1 tabl0:var2 {:RESULT=var1 +" border=\"1\""+ var2;:}
 ;
-h9::= FOR for0
+h10::= TR:var1 tr0:var2 {:RESULT=var1 + var2;:}
 ;
-h10::= TR tr0
+h11::= TH:var1 th0:var2 {:RESULT=var1 + var2;:}
 ;
-h11::= TH th0
+h12::= TD:var1 td0:var2 {:RESULT=var1 + var2;:}
 ;
-h12::= TD td0
-;
-h13::= HTML h4
+h13::= HTML:var1 h4:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada html\n");:}
 ;
 
 //Etiqueta br
-br0::= MAYOR_QUE
+br0::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta h1
-ch0::= MAYOR_QUE ch1
+ch0::= MAYOR_QUE:var1 ch1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-ch1::= INICIO_ETIQUETA ch2
-| r0 ch1
+ch1::= INICIO_ETIQUETA:var1 ch2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 ch1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba </ o $$(\n");:}
 ;
-ch2::= H1 ch3
+ch2::= H1:var1 ch3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba h1\n");:}
 ;
-ch3::= MAYOR_QUE
+ch3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta h2
-cs0::= MAYOR_QUE cs1
+cs0::= MAYOR_QUE:var1 cs1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-cs1::= INICIO_ETIQUETA cs2
-| r0 cs1
+cs1::= INICIO_ETIQUETA:var1 cs2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 cs1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba </ o $$(\n");:}
 ;
-cs2::= H2 cs3
+cs2::= H2:var1 cs3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba h2\n");:}
 ;
-cs3::= MAYOR_QUE
+cs3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 //Etiqueta tr
-tr0::= MAYOR_QUE tr1
+tr0::= MAYOR_QUE:var1 tr1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-tr1::= INICIO_ETIQUETA tr2
-| r0 tr1
-| MENOR_QUE tr4
+tr1::= INICIO_ETIQUETA:var1 tr2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 tr1:var2 {:RESULT=var1 + var2;:}
+| MENOR_QUE:var1 tr4:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la <, $$( o </\n");:}
 ;
-tr4::= h5 tr1
-| h6 tr1
-| h7 tr1
-| h11 tr1
-| h12 tr1
+tr4::= h5:var1 tr1:var2 {:RESULT=var1 + var2;:}
+| h6:var1 tr1:var2 {:RESULT=var1 + var2;:}
+| h7:var1 tr1:var2 {:RESULT=var1 + var2;:}
+| h11:var1 tr1:var2 {:RESULT=var1 + var2;:}
+| h12:var1 tr1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,th o td\n");:}
 ;
-tr2::= TR tr3
+tr2::= TR:var1 tr3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba tr\n");:}
 ;
-tr3::= MAYOR_QUE
+tr3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta td
-td0::= MAYOR_QUE td1
+td0::= MAYOR_QUE:var1 td1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-td1::= INICIO_ETIQUETA td2
-| r0 td1
-| MENOR_QUE td4
+td1::= INICIO_ETIQUETA:var1 td2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 td1:var2 {:RESULT=var1 + var2;:}
+| MENOR_QUE:var1 td4:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
-td4::= h5 td1
-| h6 td1
-| h7 td1
+td4::= h5:var1 td1:var2 {:RESULT=var1 + var2;:}
+| h6:var1 td1:var2 {:RESULT=var1 + var2;:}
+| h7:var1 td1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br\n");:}
 ;
-td2::= TD td3
+td2::= TD:var1 td3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada td\n");:}
 ;
-td3::= MAYOR_QUE
+td3::= MAYOR_QUE: var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta th
-th0::= MAYOR_QUE th1
+th0::= MAYOR_QUE:var1 th1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-th1::= INICIO_ETIQUETA th2
-| r0 th1
-| MENOR_QUE th4
+th1::= INICIO_ETIQUETA:var1 th2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 th1:var2 {:RESULT=var1 + var2;:}
+| MENOR_QUE:var1 th4:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
-th4::= h5 th1
-| h6 th1
-| h7 th1
+th4::= h5:var1 th1:var2 {:RESULT=var1 + var2;:}
+| h6:var1 th1:var2 {:RESULT=var1 + var2;:}
+| h7:var1 th1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada h1,h2 o br\n");:}
 ;
-th2::= TH th3
+th2::= TH:var1 th3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada th\n");:}
 ;
-th3::= MAYOR_QUE
+th3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
 
 //Etiqueta table
-tabl0::= MAYOR_QUE tabl1
+tabl0::= MAYOR_QUE:var1 tabl1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
-tabl1::= INICIO_ETIQUETA tabl2
-| r0 tabl1
-| MENOR_QUE tabl4
+tabl1::= INICIO_ETIQUETA:var1 tabl2:var2 {:RESULT=var1 + var2;:}
+| r0:var1 tabl1:var2 {:RESULT=var1 + var2;:}
+| MENOR_QUE:var1 tabl4:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba </, $$( o <\n");:}
 ;
-tabl4::= h5 tabl1
-| h6 tabl1
-| h7 tabl1
-| h9 tabl1
-| h10 tabl1
+tabl4::= h5:var1 tabl1:var2 {:RESULT=var1 + var2;:}
+| h6:var1 tabl1:var2 {:RESULT=var1 + var2;:}
+| h7:var1 tabl1:var2 {:RESULT=var1 + var2;:}
+| h10:var1 tabl1:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada h1,h2,br,for o tr\n");:}
 ;
-tabl2::= TABLE tabl3
+tabl2::= TABLE:var1 tabl3:var2 {:RESULT=var1 + var2;:}
 | error {:taErrores.append("Se esperaba la palabra reservada table\n");:}
 ;
-tabl3::= MAYOR_QUE
+tabl3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
-;
-
-//Etiqueta for
-for0::= ITERADOR for1
-| error {:taErrores.append("Se esperaba la palabra reservada iterador\n");:}
-;
-for1::= DOS_PUNTOS for2
-| error {:taErrores.append("Se esperaban dos puntos\n");:}
-;
-for2::= ENTERO for3
-| ID for3
-| error {:taErrores.append("Se esperaba un entero o id\n");:}
-;
-for3::= HASTA for4 
-| error {:taErrores.append("Se esperaba la palabra reservada hasta\n");:}
-;
-for4::= DOS_PUNTOS for5
-| error {:taErrores.append("Se esperaban dos puntos\n");:}
-;
-for5::= ENTERO for6
-| ID  for6
-| error {:taErrores.append("Se esperaba un entero o id\n");:}
-;
-for6::= P_COMA for7
-| error {:taErrores.append("Se esperaba punto y coma\n");:}
-;
-for7::= MAYOR_QUE for8
-| error {:taErrores.append("Se esperaba >\n");:}
-;
-for8::= INICIO_ETIQUETA for9
-| r0 for8
-| MENOR_QUE for11
-| error {:taErrores.append("Se esperaba </, $$( o <\n");:}
-;
-for11::= h5 for8
-| h6 for8
-| h7 for8
-| h8 for8
-| h10 for8
-| h11 for8
-| h12 for8
-| error {:taErrores.append("Se esperaba h1,h2,br,table,tr,th o td\n");:}
-;
-for9::= FOR for10
-| error {:taErrores.append("Se esperaba la palabra reservada for\n");:}
-;
-for10::= MAYOR_QUE
-| error {:taErrores.append("Se esperaba >\n");:} 
 ;
 
 //Acceso a variables
-r0::= INICIO_ACCESO r1
+r0::= INICIO_ACCESO r1 {:RESULT = "ACCESO";:}
 ;
 r1::= v6 r2
 | ID r2
@@ -450,6 +397,6 @@ r2::= FIN_ACCESO
 ;
 
 //CIERRE HTML
-h4::= MAYOR_QUE
+h4::= MAYOR_QUE:var1 {:RESULT=var1;:}
 | error {:taErrores.append("Se esperaba >\n");:}
 ;
