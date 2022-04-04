@@ -386,10 +386,10 @@ tabl3::= MAYOR_QUE:var1 {:RESULT=var1;:}
 ;
 
 //Acceso a variables
-r0::= INICIO_ACCESO r1 {:RESULT = "ACCESO";:}
+r0::= INICIO_ACCESO r1:var1 {:RESULT = var1;:}
 ;
-r1::= v6 r2
-| ID r2
+r1::= v6:var1 r2 {:RESULT=var1.toString();:}
+| ID:var1 r2  {:termino = tablaSimbolosDef.getTermino(var1); if(termino == null){agregarErrorNoExisteVarDef(var1right, var1);}else{RESULT=termino.getValor();}:}
 | error {:taErrores.append("Se esperaba un id o RESULT...\n");:}
 ;
 r2::= FIN_ACCESO

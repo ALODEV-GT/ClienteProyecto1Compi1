@@ -3130,7 +3130,10 @@ try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integ
           case 202: // r0 ::= INICIO_ACCESO r1 
             {
               String RESULT =null;
-		RESULT = "ACCESO";
+		int var1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int var1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String var1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = var1;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("r0",74, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3139,7 +3142,10 @@ try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integ
           case 203: // r1 ::= v6 r2 
             {
               String RESULT =null;
-
+		int var1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int var1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object var1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		RESULT=var1.toString();
               CUP$parser$result = parser.getSymbolFactory().newSymbol("r1",75, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3148,7 +3154,10 @@ try{TerminoDef td = tablaSimbolosDef.getTermino(var1); if(td!=null){indice=Integ
           case 204: // r1 ::= ID r2 
             {
               String RESULT =null;
-
+		int var1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int var1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String var1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		termino = tablaSimbolosDef.getTermino(var1); if(termino == null){agregarErrorNoExisteVarDef(var1right, var1);}else{RESULT=termino.getValor();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("r1",75, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

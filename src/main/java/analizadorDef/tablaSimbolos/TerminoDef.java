@@ -50,7 +50,7 @@ public class TerminoDef {
     }
 
     public void setValor(String valor) {
-        this.valor = valor;
+        this.valor = valor.replace("\"","");
     }
 
     @Override

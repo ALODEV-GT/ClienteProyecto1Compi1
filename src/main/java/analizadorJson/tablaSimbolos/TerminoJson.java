@@ -10,15 +10,15 @@ public class TerminoJson {
 
     public TerminoJson(RolJson rol, String nombre, String tipo, String funcion, int parametros) {
         this.rol = rol;
-        this.nombre = nombre;
-        this.tipo = tipo;
-        this.funcion = funcion;
+        this.nombre = nombre.replace("\"", "");
+        this.tipo = tipo.replace("\"", "");
+        this.funcion = funcion.replace("\"", "");
         this.parametros = parametros;
     }
 
     public TerminoJson(RolJson rol, String nombre) {
         this.rol = rol;
-        this.nombre = nombre;
+        this.nombre = nombre.replace("\"", "");
     }
 
     public TerminoJson() {
@@ -38,7 +38,7 @@ public class TerminoJson {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = nombre.replace("\"", "");
     }
 
     public String getTipo() {
@@ -46,7 +46,7 @@ public class TerminoJson {
     }
 
     public void setTipo(String tipo) {
-        this.tipo = tipo;
+        this.tipo = tipo.replace("\"", "");
     }
 
     public String getFuncion() {
@@ -54,7 +54,7 @@ public class TerminoJson {
     }
 
     public void setFuncion(String funcion) {
-        this.funcion = funcion;
+        this.funcion = funcion.replace("\"", "");
     }
 
     public int getParametros() {
