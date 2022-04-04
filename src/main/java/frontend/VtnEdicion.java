@@ -13,14 +13,17 @@ public class VtnEdicion extends javax.swing.JFrame {
 
     private File archivoJson;
     private File archivoDef;
+    private File archivoHtml;
     private TablaSimbolosJson tablaSimbolosJson = new TablaSimbolosJson();
     private NumeroLinea numLineaJson;
     private NumeroLinea numLineaDef;
 
-    public VtnEdicion(File archivoJson, File archivoDef) {
+    public VtnEdicion(File archivoJson, File archivoDef, File archivoHtml) {
         this.archivoJson = archivoJson;
         this.archivoDef = archivoDef;
+        this.archivoHtml = archivoHtml;
         initComponents();
+        epInterprete.setContentType("text/html");
         this.numLineaJson = new NumeroLinea(taJson);
         this.numLineaDef = new NumeroLinea(taDef);
         this.spJson.setRowHeaderView(numLineaJson);
@@ -42,6 +45,7 @@ public class VtnEdicion extends javax.swing.JFrame {
         spDef = new javax.swing.JScrollPane();
         taDef = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
+        epInterprete = new javax.swing.JEditorPane();
         jPanel2 = new javax.swing.JPanel();
         btnEjecutar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -63,6 +67,9 @@ public class VtnEdicion extends javax.swing.JFrame {
         spDef.setViewportView(taDef);
 
         jTabbedPane1.addTab("reportes.def", spDef);
+
+        jScrollPane4.setViewportView(epInterprete);
+
         jTabbedPane1.addTab("Reportes", jScrollPane4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -158,7 +165,8 @@ public class VtnEdicion extends javax.swing.JFrame {
         //ANALISIS DEL HTML
         AnalizarDef analizadorDef = new AnalizarDef(taDef.getText(), taConsola, tablaSimbolosJson);
         analizadorDef.analizar();
-
+        guardarArchivo(archivoHtml, analizadorDef.getCodigoHTML().toString());
+        mostrarReporteHtml(analizadorDef.getCodigoHTML());
     }//GEN-LAST:event_btnEjecutarActionPerformed
 
     public void guardar() {
@@ -190,8 +198,17 @@ public class VtnEdicion extends javax.swing.JFrame {
         return guardado;
     }
 
+    private void mostrarReporteHtml(StringBuilder codigo) {
+//        try {
+            epInterprete.setText(codigo.toString());
+//        } catch (IOException ex) {
+//
+//        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEjecutar;
+    private javax.swing.JEditorPane epInterprete;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;

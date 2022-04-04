@@ -31,10 +31,12 @@ public class Recibir {
             this.directorioProyecto = directorio;
             boolean guardado = guardarArchivo(directorio, contenidoArchivo, "repitencia.json");
             guardarArchivo(directorio, "", "reportes.def");
+            guardarArchivo(directorio, "", "reporte.html");
             String contenidoCopy = directorio.getAbsolutePath() + "/repitencia.json,";
-            contenidoCopy += directorio.getAbsolutePath() + "/reportes.def";
+            contenidoCopy += directorio.getAbsolutePath() + "/reportes.def,";
+            contenidoCopy += directorio.getAbsolutePath() + "/reporte.html";
             guardarArchivo(directorio, contenidoCopy, "proyecto.copy");
-            abrirProyecto(new File(directorio.getAbsoluteFile()+"/proyecto.copy"));
+            abrirProyecto(new File(directorio.getAbsoluteFile() + "/proyecto.copy"));
             if (guardado) {
                 JOptionPane.showMessageDialog(null, "Archivo guardado");
             } else {
@@ -48,7 +50,8 @@ public class Recibir {
         String[] archivos = estructura.split(",");
         File archivoJson = new File(archivos[0].replace(" ", ""));
         File archivoDef = new File(archivos[1].replace(" ", ""));
-        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef);
+        File archivoHtml = new File(archivos[2].replace(" ", ""));
+        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef, archivoHtml);
         vtnEdicion.setVisible(true);
         parent.dispose();
     }

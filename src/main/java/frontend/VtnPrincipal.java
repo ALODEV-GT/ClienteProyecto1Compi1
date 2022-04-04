@@ -180,7 +180,8 @@ public class VtnPrincipal extends javax.swing.JFrame {
         String[] archivos = estructura.split(",");
         File archivoJson = new File(archivos[0].replace(" ", ""));
         File archivoDef = new File(archivos[1].replace(" ", ""));
-        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef);
+        File archivoHtml = new File(archivos[2].replace(" ", ""));
+        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef, archivoHtml);
         vtnEdicion.setVisible(true);
         this.dispose();
     }

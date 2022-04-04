@@ -11,6 +11,7 @@ public class AnalizarDef {
     private final String def;
     private final JTextArea taConsola;
     private final TablaSimbolosJson tablaSimbolosJson;
+    private StringBuilder html ;
 
     public AnalizarDef(String json, JTextArea taConsola, TablaSimbolosJson tablaSimbolosJson) {
         this.def = json;
@@ -29,11 +30,15 @@ public class AnalizarDef {
             par.imprimirTablaSimbolosoDef();
             if (!par.isErrores()) {
                 taConsola.append("Analisis del Def correcto\n");
-                System.out.println(par.getCodigoHtml());
+                this.html = par.getCodigoHtml();
             }
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
         }
         
+    }
+    
+    public StringBuilder getCodigoHTML(){
+        return this.html;
     }
 }
