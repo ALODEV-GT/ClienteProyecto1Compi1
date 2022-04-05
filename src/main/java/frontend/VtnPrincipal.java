@@ -181,9 +181,18 @@ public class VtnPrincipal extends javax.swing.JFrame {
         File archivoJson = new File(archivos[0].replace(" ", ""));
         File archivoDef = new File(archivos[1].replace(" ", ""));
         File archivoHtml = new File(archivos[2].replace(" ", ""));
-        VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef, archivoHtml);
-        vtnEdicion.setVisible(true);
-        this.dispose();
+        if (!archivoJson.exists() || !archivoDef.exists() || !archivoHtml.exists()) {
+            String nombreArchivos = "";
+            nombreArchivos += !archivoJson.exists() ? "repitencia.json\n" : "";
+            nombreArchivos += !archivoDef.exists() ? "reportes.def\n" : "";
+            nombreArchivos += !archivoHtml.exists() ? "reporte.html\n" : "";
+            JOptionPane.showMessageDialog(this, "No se encontraron los archivos\n" + nombreArchivos, "Proyecto daniado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            VtnEdicion vtnEdicion = new VtnEdicion(archivoJson, archivoDef, archivoHtml);
+            vtnEdicion.setVisible(true);
+            this.dispose();
+        }
+
     }
 
     public static String leerArchivo(File archivo) {

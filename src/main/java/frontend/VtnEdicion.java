@@ -3,9 +3,11 @@ package frontend;
 import analizadorDef.analizador.AnalizarDef;
 import analizadorJson.analizador.Analizar;
 import analizadorJson.tablaSimbolos.TablaSimbolosJson;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -24,6 +26,7 @@ public class VtnEdicion extends javax.swing.JFrame {
         this.archivoHtml = archivoHtml;
         initComponents();
         epInterprete.setContentType("text/html");
+        leerArchivo();
         this.numLineaJson = new NumeroLinea(taJson);
         this.numLineaDef = new NumeroLinea(taDef);
         this.spJson.setRowHeaderView(numLineaJson);
@@ -32,6 +35,22 @@ public class VtnEdicion extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.taJson.setText(VtnPrincipal.leerArchivo(this.archivoJson));
         this.taDef.setText(VtnPrincipal.leerArchivo(this.archivoDef));
+    }
+
+    private void leerArchivo() {
+        BufferedReader obj;
+        try {
+            obj = new BufferedReader(new FileReader(this.archivoHtml));
+            String contenido = "";
+            String linea;
+            while ((linea = obj.readLine()) != null) {
+                contenido += linea;
+            }
+            epInterprete.setText(contenido);
+        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -159,14 +178,18 @@ public class VtnEdicion extends javax.swing.JFrame {
         this.taConsola.setText(null);
         Analizar analizar = new Analizar(taJson.getText(), taConsola, this.tablaSimbolosJson);
         analizar.analizar();
-        //this.tablaSimbolosJson.imprimirTabla();
-        //Manejar por si hay errores, asi no pasar al analisis del HTML
-
-        //ANALISIS DEL HTML
-        AnalizarDef analizadorDef = new AnalizarDef(taDef.getText(), taConsola, tablaSimbolosJson);
-        analizadorDef.analizar();
-        guardarArchivo(archivoHtml, analizadorDef.getCodigoHTML().toString());
-        mostrarReporteHtml(analizadorDef.getCodigoHTML());
+        if (!analizar.isErrores()) {
+            AnalizarDef analizadorDef = new AnalizarDef(taDef.getText(), taConsola, tablaSimbolosJson);
+            analizadorDef.analizar();
+            if (!analizadorDef.isErrores()) {
+                guardarArchivo(archivoHtml, analizadorDef.getCodigoHTML().toString());
+                mostrarReporteHtml(analizadorDef.getCodigoHTML());
+            } else {
+                JOptionPane.showMessageDialog(this, "Se encontraron errores en " + this.archivoDef.getName(), "", JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Se encontraron errores en " + this.archivoJson.getName(), "", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnEjecutarActionPerformed
 
     public void guardar() {
@@ -199,11 +222,7 @@ public class VtnEdicion extends javax.swing.JFrame {
     }
 
     private void mostrarReporteHtml(StringBuilder codigo) {
-//        try {
-            epInterprete.setText(codigo.toString());
-//        } catch (IOException ex) {
-//
-//        }
+        epInterprete.setText(codigo.toString());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -11,6 +11,7 @@ public class Analizar {
     private final String json;
     private final JTextArea taConsola;
     private final TablaSimbolosJson tablaSimbolosJson;
+    private boolean errores = false;
 
     public Analizar(String json, JTextArea taConsola, TablaSimbolosJson tablaSimbolosJson) {
         this.json = json;
@@ -25,11 +26,16 @@ public class Analizar {
 
         try {
             par.parse();
+            this.errores = par.isErrores();
             if (!par.isErrores()) {
                 taConsola.append("Analisis del Json correcto\n");
             }
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
         }
+    }
+
+    public boolean isErrores() {
+        return errores;
     }
 }

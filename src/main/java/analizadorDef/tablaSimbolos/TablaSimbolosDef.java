@@ -14,7 +14,6 @@ public class TablaSimbolosDef {
         if (!this.existe(termino.getId())) {
             this.variables.add(termino);
             agregado = true;
-            System.out.println("Se agrego: " + termino);
         }
         return agregado;
     }
@@ -29,10 +28,10 @@ public class TablaSimbolosDef {
         }
         return existe;
     }
-    
-    public TerminoDef getTermino(String id){
+
+    public TerminoDef getTermino(String id) {
         TerminoDef termino = null;
-        for (TerminoDef td: variables) {
+        for (TerminoDef td : variables) {
             if (td.getId().equals(id)) {
                 termino = td;
                 break;
