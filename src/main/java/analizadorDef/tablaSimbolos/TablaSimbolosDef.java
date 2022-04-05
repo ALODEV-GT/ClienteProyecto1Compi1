@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class TablaSimbolosDef {
 
-    private ArrayList<TerminoDef> variables = new ArrayList<>();
+    private final ArrayList<TerminoDef> variables = new ArrayList<>();
 
     public TablaSimbolosDef() {
     }

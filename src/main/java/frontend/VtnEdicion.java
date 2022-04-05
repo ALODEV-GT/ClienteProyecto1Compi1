@@ -13,12 +13,12 @@ import javax.swing.JOptionPane;
 
 public class VtnEdicion extends javax.swing.JFrame {
 
-    private File archivoJson;
-    private File archivoDef;
-    private File archivoHtml;
-    private TablaSimbolosJson tablaSimbolosJson = new TablaSimbolosJson();
-    private NumeroLinea numLineaJson;
-    private NumeroLinea numLineaDef;
+    private final File archivoJson;
+    private final File archivoDef;
+    private final File archivoHtml;
+    private final TablaSimbolosJson tablaSimbolosJson = new TablaSimbolosJson();
+    private final NumeroLinea numLineaJson;
+    private final NumeroLinea numLineaDef;
 
     public VtnEdicion(File archivoJson, File archivoDef, File archivoHtml) {
         this.archivoJson = archivoJson;
@@ -47,6 +47,7 @@ public class VtnEdicion extends javax.swing.JFrame {
                 contenido += linea;
             }
             epInterprete.setText(contenido);
+            obj.close();
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
         }
@@ -79,7 +80,7 @@ public class VtnEdicion extends javax.swing.JFrame {
         taJson.setRows(5);
         spJson.setViewportView(taJson);
 
-        jTabbedPane1.addTab("resultado.json", spJson);
+        jTabbedPane1.addTab("repitencia.json", spJson);
 
         taDef.setColumns(20);
         taDef.setRows(5);
@@ -89,7 +90,7 @@ public class VtnEdicion extends javax.swing.JFrame {
 
         jScrollPane4.setViewportView(epInterprete);
 
-        jTabbedPane1.addTab("Reportes", jScrollPane4);
+        jTabbedPane1.addTab("reporte.html", jScrollPane4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

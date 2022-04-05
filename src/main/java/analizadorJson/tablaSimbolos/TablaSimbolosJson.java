@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class TablaSimbolosJson {
 
     private TerminoJson score;
-    private ArrayList<TerminoJson> clases = new ArrayList<>();
-    private ArrayList<TerminoJson> variables = new ArrayList<>();
-    private ArrayList<TerminoJson> metodos = new ArrayList<>();
-    private ArrayList<TerminoJson> comentarios = new ArrayList<>();
+    private final ArrayList<TerminoJson> clases = new ArrayList<>();
+    private final ArrayList<TerminoJson> variables = new ArrayList<>();
+    private final ArrayList<TerminoJson> metodos = new ArrayList<>();
+    private final ArrayList<TerminoJson> comentarios = new ArrayList<>();
 
     public TablaSimbolosJson() {
 
@@ -63,51 +63,51 @@ public class TablaSimbolosJson {
     }
 
     public String getClases() {
-        String clases = "Clases[";
+        String clasesStr = "Clases[";
         for (int i = 0; i < this.clases.size(); i++) {
             TerminoJson termino = this.clases.get(i);
-            clases += "{Nombre:" + termino.getNombre() + "}";
+            clasesStr += "{Nombre:" + termino.getNombre() + "}";
             if (i != this.clases.size() - 1) {
-                clases += ",";
+                clasesStr += ",";
             }
         }
-        return clases + "]";
+        return clasesStr + "]";
     }
 
     public String getVariables() {
-        String variables = "Variables[";
+        String variablesStr = "Variables[";
         for (int i = 0; i < this.variables.size(); i++) {
             TerminoJson termino = this.variables.get(i);
-            variables += "{Nombre:" + termino.getNombre() + ",Tipo:" + termino.getTipo() + ",Funcion:" + termino.getFuncion() + "}";
+            variablesStr += "{Nombre:" + termino.getNombre() + ",Tipo:" + termino.getTipo() + ",Funcion:" + termino.getFuncion() + "}";
             if (i != this.variables.size() - 1) {
-                variables += ",";
+                variablesStr += ",";
             }
         }
-        return variables + "]";
+        return variablesStr + "]";
     }
 
     public String getMetodos() {
-        String metodos = "Metodos[";
+        String metodosStr = "Metodos[";
         for (int i = 0; i < this.metodos.size(); i++) {
             TerminoJson termino = this.metodos.get(i);
-            metodos += "{Nombre:" + termino.getNombre() + ",Tipo:" + termino.getTipo() + ",Parametros" + termino.getParametros() + "}";
+            metodosStr += "{Nombre:" + termino.getNombre() + ",Tipo:" + termino.getTipo() + ",Parametros" + termino.getParametros() + "}";
             if (i != this.metodos.size() - 1) {
-                metodos += ",";
+                metodosStr += ",";
             }
         }
-        return metodos + "]";
+        return metodosStr + "]";
     }
 
     public String getComentarios() {
-        String comentarios = "Comentarios[";
+        String comentariosStr = "Comentarios[";
         for (int i = 0; i < this.comentarios.size(); i++) {
             TerminoJson termino = this.comentarios.get(i);
-            comentarios += "{Nombre:" + termino.getNombre() + "}";
+            comentariosStr += "{Nombre:" + termino.getNombre() + "}";
             if (i != this.comentarios.size() - 1) {
-                comentarios += ",";
+                comentariosStr += ",";
             }
         }
-        return comentarios + "]";
+        return comentariosStr + "]";
     }
 
     public TerminoJson encontrarTermino(RolJson rol, int indice) {

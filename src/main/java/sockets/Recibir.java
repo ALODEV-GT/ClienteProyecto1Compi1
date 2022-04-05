@@ -14,6 +14,7 @@ public class Recibir {
     private final DataInputStream in;
     private javax.swing.JFrame parent;
     private File directorioProyecto;
+    private final String SEPARADOR = System.getProperty("file.separator");
 
     public Recibir(DataInputStream in, javax.swing.JFrame parent) {
         this.in = in;
@@ -32,11 +33,11 @@ public class Recibir {
             boolean guardado = guardarArchivo(directorio, contenidoArchivo, "repitencia.json");
             guardarArchivo(directorio, "", "reportes.def");
             guardarArchivo(directorio, "", "reporte.html");
-            String contenidoCopy = directorio.getAbsolutePath() + "/repitencia.json,";
-            contenidoCopy += directorio.getAbsolutePath() + "/reportes.def,";
-            contenidoCopy += directorio.getAbsolutePath() + "/reporte.html";
+            String contenidoCopy = directorio.getAbsolutePath() + SEPARADOR + "repitencia.json,";
+            contenidoCopy += directorio.getAbsolutePath() + SEPARADOR + "reportes.def,";
+            contenidoCopy += directorio.getAbsolutePath() + SEPARADOR + "reporte.html";
             guardarArchivo(directorio, contenidoCopy, "proyecto.copy");
-            abrirProyecto(new File(directorio.getAbsoluteFile() + "/proyecto.copy"));
+            abrirProyecto(new File(directorio.getAbsoluteFile() + SEPARADOR + "proyecto.copy"));
             if (guardado) {
                 JOptionPane.showMessageDialog(null, "Archivo guardado");
             } else {
@@ -60,7 +61,7 @@ public class Recibir {
         boolean guardado = false;
         FileWriter fw;
         try {
-            fw = new FileWriter(archivo + "/" + nombre);
+            fw = new FileWriter(archivo + SEPARADOR + nombre);
             fw.write(contenido);
             fw.close();
             guardado = true;

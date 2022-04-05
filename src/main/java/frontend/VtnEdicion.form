@@ -83,8 +83,8 @@
             <Container class="javax.swing.JScrollPane" name="spJson">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="resultado.json">
-                    <Property name="tabTitle" type="java.lang.String" value="resultado.json"/>
+                  <JTabbedPaneConstraints tabName="repitencia.json">
+                    <Property name="tabTitle" type="java.lang.String" value="repitencia.json"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -121,8 +121,8 @@
             <Container class="javax.swing.JScrollPane" name="jScrollPane4">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Reportes">
-                    <Property name="tabTitle" type="java.lang.String" value="Reportes"/>
+                  <JTabbedPaneConstraints tabName="reporte.html">
+                    <Property name="tabTitle" type="java.lang.String" value="reporte.html"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
